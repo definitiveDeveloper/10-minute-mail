@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
@@ -6,11 +6,46 @@ import EmailBox from '@/components/EmailBox';
 import InboxContainer from '@/components/InboxContainer';
 import StopwatchLogo from '@/components/StopwatchLogo';
 
+// Replace Node.js `crypto.randomBytes` with browser-friendly approach
+function generateRandomUsername(length = 8) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const randomValues = new Uint8Array(length);
+  crypto.getRandomValues(randomValues);
+  randomValues.forEach(value => {
+    result += characters[value % characters.length];
+  });
+  return result;
+}
+
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.5 },
 };
+
+const tempEmailDomains = [
+  'tempmail.com', '10minutemail.net', 'throwawaymail.com', 'maildrop.cc', 'guerrillamail.com'
+];
+
+// Main function to generate a random temporary email address
+async function generateTempEmail() {
+  const domain = tempEmailDomains[Math.floor(Math.random() * tempEmailDomains.length)];
+
+  if (domain === 'guerrillamail.com') {
+    try {
+      // Simulate GuerrillaMail API call (mocking response here)
+      const email = `${generateRandomUsername()}@guerrillamail.com`;
+      return { email: email.toLowerCase(), domain };
+    } catch (error) {
+      console.error('Error generating GuerrillaMail email:', error);
+    }
+  }
+
+  const username = generateRandomUsername();
+  const email = `${username}@${domain}`;
+  return { email: email.toLowerCase(), domain };
+}
 
 const testimonials = [
   {
@@ -33,21 +68,21 @@ const testimonials = [
 export default function App() {
   const [email, setEmail] = useState('');
 
-  // Function to fetch new email from backend
-  const handleRefresh = useCallback(async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/generate-email');  // Make request to backend
-      const data = await response.json();
-      setEmail(data.email);  // Set the fetched email to state
-    } catch (error) {
-      console.error('Error fetching email:', error);
-    }
+  // Set the email when the component is first loaded
+  useEffect(() => {
+    const fetchEmail = async () => {
+      const generatedEmail = await generateTempEmail();  // Generate random email
+      setEmail(generatedEmail.email);  // Set the email to state
+    };
+
+    fetchEmail();  // Generate and set the email on page load
   }, []);
 
-  // Fetch email when the page first loads
-  useEffect(() => {
-    handleRefresh();
-  }, [handleRefresh]);
+  // Function to refresh the email
+  const handleRefresh = useCallback(async () => {
+    const generatedEmail = await generateTempEmail();  // Generate random email
+    setEmail(generatedEmail.email);  // Update the state with the new email
+  }, []);
 
   return (
     <div className="min-h-screen">
