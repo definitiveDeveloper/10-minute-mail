@@ -1,12 +1,11 @@
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import EmailBox from "@/components/EmailBox";
 import InboxContainer from "@/components/InboxContainer";
 import StopwatchLogo from "@/components/StopwatchLogo";
-import axios from "axios";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -33,27 +32,12 @@ const testimonials = [
 ];
 
 function generateRandomEmail() {
-  // const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  // const length = 10;
-  // const randomString = Array.from({ length }, () => 
-  //   chars.charAt(Math.floor(Math.random() * chars.length))
-  // ).join('');
-  // return `${randomString}@10minutemail.com`;
-  
-  const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    const fetchEmail = async () => {
-      try {
-        const res = await axios.get("http://localhost:3000/api/email/new");
-        setEmail(res.data.email);
-      } catch (err) {
-        console.error("Error fetching email:", err);
-      }
-    };
-  
-    fetchEmail();
-  }, []);
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const length = 10;
+  const randomString = Array.from({ length }, () => 
+    chars.charAt(Math.floor(Math.random() * chars.length))
+  ).join('');
+  return `${randomString}@10minutemail.com`;
 }
 
 export default function App() {
