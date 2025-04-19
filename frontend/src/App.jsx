@@ -1,51 +1,53 @@
-
-import React, { useState, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Star } from "lucide-react";
-import { Toaster } from "@/components/ui/toaster";
-import EmailBox from "@/components/EmailBox";
-import InboxContainer from "@/components/InboxContainer";
-import StopwatchLogo from "@/components/StopwatchLogo";
+import React, { useState, useCallback, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Star } from 'lucide-react';
+import { Toaster } from '@/components/ui/toaster';
+import EmailBox from '@/components/EmailBox';
+import InboxContainer from '@/components/InboxContainer';
+import StopwatchLogo from '@/components/StopwatchLogo';
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 }
+  transition: { duration: 0.5 },
 };
 
 const testimonials = [
   {
-    name: "Alex Thompson",
-    role: "Digital Marketer",
-    content: "This temporary email service has saved me countless times from spam. Simple and effective!",
+    name: 'Alex Thompson',
+    role: 'Digital Marketer',
+    content: 'This temporary email service has saved me countless times from spam. Simple and effective!',
   },
   {
-    name: "Lisa Chen",
-    role: "Software Developer",
-    content: "Perfect for testing applications. Clean interface and instant access.",
+    name: 'Lisa Chen',
+    role: 'Software Developer',
+    content: 'Perfect for testing applications. Clean interface and instant access.',
   },
   {
-    name: "James Wilson",
-    role: "Content Creator",
-    content: "The best temporary email service I've used. No ads, no hassle, just works.",
-  }
+    name: 'James Wilson',
+    role: 'Content Creator',
+    content: 'The best temporary email service I\'ve used. No ads, no hassle, just works.',
+  },
 ];
 
-function generateRandomEmail() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  const length = 10;
-  const randomString = Array.from({ length }, () => 
-    chars.charAt(Math.floor(Math.random() * chars.length))
-  ).join('');
-  return `${randomString}@10minutemail.com`;
-}
-
 export default function App() {
-  const [email, setEmail] = useState(generateRandomEmail());
+  const [email, setEmail] = useState('');
 
-  const handleRefresh = useCallback(() => {
-    setEmail(generateRandomEmail());
+  // Function to fetch new email from backend
+  const handleRefresh = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/generate-email');  // Make request to backend
+      const data = await response.json();
+      setEmail(data.email);  // Set the fetched email to state
+    } catch (error) {
+      console.error('Error fetching email:', error);
+    }
   }, []);
+
+  // Fetch email when the page first loads
+  useEffect(() => {
+    handleRefresh();
+  }, [handleRefresh]);
 
   return (
     <div className="min-h-screen">
@@ -54,7 +56,7 @@ export default function App() {
           <StopwatchLogo className="text-2xl" />
         </nav>
 
-        <motion.div 
+        <motion.div
           className="container mx-auto px-6 py-24 text-center"
           initial="initial"
           animate="animate"
@@ -64,11 +66,11 @@ export default function App() {
             Your <span className="gradient-text">10 Minute</span> Email
           </h1>
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Instant temporary email for secure, spam-free sign-ups. No registration required.
+            Instant temporary email for secure, spam-free sign-ups. No registrations.
           </p>
-          
+
           <EmailBox email={email} onRefresh={handleRefresh} />
-          
+
           <div className="mt-12">
             <InboxContainer />
           </div>
@@ -77,19 +79,15 @@ export default function App() {
 
       {/* Testimonials Section */}
       <section className="py-24 container mx-auto px-6">
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
           variants={fadeIn}
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Trusted by thousands
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            See what our users have to say
-          </p>
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">Trusted by thousands</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">See what our users have to say</p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
