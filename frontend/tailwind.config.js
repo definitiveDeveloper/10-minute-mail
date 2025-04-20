@@ -54,6 +54,7 @@ module.exports = {
 					foreground: 'hsl(var(--card-foreground))',
 				},
 				primaryPurple: '#6F5AF6',
+				primaryPink: '#C050D5',
 				primaryBackground: 'rgba(111, 90, 246, 0.05)',
 			},
 			borderRadius: {

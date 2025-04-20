@@ -32,7 +32,7 @@ export default function EmailBox({ email, onRefresh }) {
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full max-w-2xl mx-auto">
-      <div className="relative flex-1 bg-muted rounded-lg p-4 font-mono text-sm border border-primaryPurple bg-primaryBackground">
+      <div className="relative flex-1 bg-muted rounded-lg p-4 font-poppins text-sm border border-primaryPurple bg-primaryBackground">
         <div className="pr-10 overflow-x-auto whitespace-nowrap text-base">
           {email}
         </div>

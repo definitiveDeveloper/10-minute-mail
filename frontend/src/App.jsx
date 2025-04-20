@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Star } from 'lucide-react';
-import { Toaster } from '@/components/ui/toaster';
+import { motion } from "framer-motion";
+import { Star, Coffee } from "lucide-react";
+import { Toaster } from "@/components/ui/toaster";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import EmailBox from '@/components/EmailBox';
-import InboxContainer from '@/components/InboxContainer';
-import StopwatchLogo from '@/components/StopwatchLogo';
-import { getAvatarFallbackUrl } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import EmailBox from "@/components/EmailBox";
+import InboxContainer from "@/components/InboxContainer";
+import StopwatchLogo from "@/components/StopwatchLogo";
 import wadeImage from '@/images/WadeMercer.png'; // Using alias if configured
 import lisaImage from '@/images/LisaChen.png'; // Using alias if configured
 import jaydenImage from '@/images/JaydenMorales.png'; // Using alias if configured
@@ -98,6 +98,24 @@ export default function App() {
       <div className="hero-gradient">
         <nav className="container mx-auto px-6 py-6 flex items-center justify-between">
           <StopwatchLogo className="text-2xl" />
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-muted-foreground">Powered by passion. Sustained by your love❤️</p>
+            <button
+  onClick={() => window.open('https://buymeacoffee.com/meansmuch', '_blank')}
+  className="flex items-center gap-2 bg-[#FFDD00] text-black px-4 py-2 rounded-full shadow hover:brightness-110 transition duration-200"
+>
+  <img
+    src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg"
+    alt="Coffee"
+    className="h-5 w-5"
+  />
+  <span style={{ fontFamily: '"Pacifico", cursive', fontWeight: 400 }}>
+    Buy me a coffee
+  </span>
+</button>
+
+
+          </div>
         </nav>
 
         <motion.div
@@ -116,7 +134,7 @@ export default function App() {
           <EmailBox email={email} onRefresh={handleRefresh} />
 
           <div className="mt-12">
-            <InboxContainer />
+            <InboxContainer email={email} />
           </div>
         </motion.div>
       </div>
