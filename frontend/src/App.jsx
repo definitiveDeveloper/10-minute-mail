@@ -2,9 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EmailBox from '@/components/EmailBox';
 import InboxContainer from '@/components/InboxContainer';
 import StopwatchLogo from '@/components/StopwatchLogo';
+import { getAvatarFallbackUrl } from "@/lib/utils";
+import wadeImage from '@/images/WadeMercer.png'; // Using alias if configured
+import lisaImage from '@/images/LisaChen.png'; // Using alias if configured
+import jaydenImage from '@/images/JaydenMorales.png'; // Using alias if configured
+
 
 // Replace Node.js `crypto.randomBytes` with browser-friendly approach
 function generateRandomUsername(length = 8) {
@@ -49,19 +55,22 @@ async function generateTempEmail() {
 
 const testimonials = [
   {
-    name: 'Alex Thompson',
+    name: 'Wade Mercer',
     role: 'Digital Marketer',
-    content: 'This temporary email service has saved me countless times from spam. Simple and effective!',
+    content: 'This service is perfect for quick sign-ups. The 10-minute timer is just enough for my needs.',
+    image: wadeImage
   },
   {
     name: 'Lisa Chen',
     role: 'Software Developer',
-    content: 'Perfect for testing applications. Clean interface and instant access.',
+    content: 'I use this all the time to avoid spam. Simple to use, and it gets the job done every time.',
+    image: lisaImage
   },
   {
-    name: 'James Wilson',
+    name: 'Jayden Morales',
     role: 'Content Creator',
-    content: 'The best temporary email service I\'ve used. No ads, no hassle, just works.',
+    content: 'Great for one-off uses. It’s fast, effective, and keeps my main inbox clean without any hassle.',
+    image: jaydenImage
   },
 ];
 
@@ -97,11 +106,11 @@ export default function App() {
           animate="animate"
           variants={fadeIn}
         >
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Your <span className="gradient-text">10 Minute</span> Email
           </h1>
-          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Instant temporary email for secure, spam-free sign-ups. No registrations.
+          <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Instant temporary email for secure, spam-free sign-ups.
           </p>
 
           <EmailBox email={email} onRefresh={handleRefresh} />
@@ -140,10 +149,27 @@ export default function App() {
                   <Star key={i} className="w-5 h-5 fill-primary text-primary" />
                 ))}
               </div>
-              <p className="mb-4">{testimonial.content}</p>
-              <div>
-                <p className="font-semibold">{testimonial.name}</p>
-                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+              <p className="mb-6">{testimonial.content}</p>
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10 border border-primary/20 border-primaryPurple rounded-full overflow-hidden">
+                  <AvatarImage 
+                    src={testimonial.image} 
+                    alt={testimonial.name}
+                    className="object-cover object-center w-full h-full"
+                    style={{
+                      imageRendering: 'crisp-edges',
+                      WebkitImageSmoothing: 'antialiased',
+                      MozImageSmoothing: 'antialiased'
+                    }}
+                  />
+                  <AvatarFallback>
+                    {testimonial.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-semibold text-sm">{testimonial.name}</p>
+                  <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                </div>
               </div>
             </motion.div>
           ))}
