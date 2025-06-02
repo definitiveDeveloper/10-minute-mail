@@ -1,8 +1,6 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
-import {
-    defineConfig
-} from 'vite';
+import { createLogger, defineConfig } from 'vite';
 
 const configHorizonsViteErrorHandler = `
 const observer = new MutationObserver((mutations) => {
@@ -53,13 +51,19 @@ function handleViteOverlay(node) {
 
 const configHorizonsRuntimeErrorHandler = `
 window.onerror = (message, source, lineno, colno, errorObj) => {
-	window.parent.postMessage({
-		type: 'horizons-runtime-error',
-		message,
+	const errorDetails = errorObj ? JSON.stringify({
+		name: errorObj.name,
+		message: errorObj.message,
+		stack: errorObj.stack,
 		source,
 		lineno,
 		colno,
-		error: errorObj && errorObj.stack
+	}) : null;
+
+	window.parent.postMessage({
+		type: 'horizons-runtime-error',
+		message,
+		error: errorDetails
 	}, '*');
 };
 `;
@@ -69,7 +73,19 @@ const originalConsoleError = console.error;
 console.error = function(...args) {
 	originalConsoleError.apply(console, args);
 
-	const errorString = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ').toLowerCase();
+	let errorString = '';
+
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+		if (arg instanceof Error) {
+			errorString = arg.stack || \`\${arg.name}: \${arg.message}\`;
+			break;
+		}
+	}
+
+	if (!errorString) {
+		errorString = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
+	}
 
 	window.parent.postMessage({
 		type: 'horizons-console-error',
@@ -83,7 +99,7 @@ const originalFetch = window.fetch;
 
 window.fetch = function(...args) {
 	const url = args[0] instanceof Request ? args[0].url : args[0];
-	
+
 	// Skip WebSocket URLs
 	if (url.startsWith('ws:') || url.startsWith('wss:')) {
 		return originalFetch.apply(this, args);
@@ -94,8 +110,8 @@ window.fetch = function(...args) {
 			const contentType = response.headers.get('Content-Type') || '';
 
 			// Exclude HTML document responses
-			const isDocumentResponse = 
-				contentType.includes('text/html') || 
+			const isDocumentResponse =
+				contentType.includes('text/html') ||
 				contentType.includes('application/xhtml+xml');
 
 			if (!response.ok && !isDocumentResponse) {
@@ -118,66 +134,67 @@ window.fetch = function(...args) {
 `;
 
 const addTransformIndexHtml = {
-    name: 'add-transform-index-html',
-    transformIndexHtml(html) {
-        return {
-            html,
-            tags: [{
-                    tag: 'script',
-                    attrs: {
-                        type: 'module'
-                    },
-                    children: configHorizonsRuntimeErrorHandler,
-                    injectTo: 'head',
-                },
-                {
-                    tag: 'script',
-                    attrs: {
-                        type: 'module'
-                    },
-                    children: configHorizonsViteErrorHandler,
-                    injectTo: 'head',
-                },
-                {
-                    tag: 'script',
-                    attrs: {
-                        type: 'module'
-                    },
-                    children: configHorizonsConsoleErrroHandler,
-                    injectTo: 'head',
-                },
-                {
-                    tag: 'script',
-                    attrs: {
-                        type: 'module'
-                    },
-                    children: configWindowFetchMonkeyPatch,
-                    injectTo: 'head',
-                },
-            ],
-        };
-    },
+	name: 'add-transform-index-html',
+	transformIndexHtml(html) {
+		return {
+			html,
+			tags: [
+				{
+					tag: 'script',
+					attrs: { type: 'module' },
+					children: configHorizonsRuntimeErrorHandler,
+					injectTo: 'head',
+				},
+				{
+					tag: 'script',
+					attrs: { type: 'module' },
+					children: configHorizonsViteErrorHandler,
+					injectTo: 'head',
+				},
+				{
+					tag: 'script',
+					attrs: {type: 'module'},
+					children: configHorizonsConsoleErrroHandler,
+					injectTo: 'head',
+				},
+				{
+					tag: 'script',
+					attrs: { type: 'module' },
+					children: configWindowFetchMonkeyPatch,
+					injectTo: 'head',
+				},
+			],
+		};
+	},
 };
 
+console.warn = () => {};
+
+const logger = createLogger()
+const loggerError = logger.error
+
+logger.error = (msg, options) => {
+	if (options?.error?.toString().includes('CssSyntaxError: [postcss]')) {
+		return;
+	}
+
+	loggerError(msg, options);
+}
+
 export default defineConfig({
-    plugins: [react(), addTransformIndexHtml],
-    server: {
-        cors: true,
-        headers: {
-            'Cross-Origin-Embedder-Policy': 'credentialless',
-        },
-        allowedHosts: true,
-        proxy: {
-            "/api": {
-                target: "http://localhost:3000",
-                changeOrigin: true,
-            },
-        },
-    },
-    resolve: {
-        extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],
-        alias: {
-            '@': path.resolve(__dirname, './src'),
-        },
-    },
+	customLogger: logger,
+	plugins: [react(), addTransformIndexHtml],
+	server: {
+		cors: true,
+		headers: {
+			'Cross-Origin-Embedder-Policy': 'credentialless',
+		},
+		allowedHosts: true,
+	},
+	resolve: {
+		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],
+		alias: {
+			'@': path.resolve(__dirname, './src'),
+		},
+	},
 });

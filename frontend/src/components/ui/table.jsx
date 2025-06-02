@@ -1,21 +1,5 @@
-// src/components/ui/table.jsx
-
 import React from "react"
 import { cn } from "@/lib/utils"
-import { cva } from "class-variance-authority"
-
-const tableVariants = cva("w-full caption-bottom text-sm", {
-  variants: {
-    variant: {
-      default: "",
-      purpleOutline:
-        "border border-primaryPurple bg-primaryPurple text-white hover:opacity-90",
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-  },
-})
 
 const Table = React.forwardRef(({ className, ...props }, ref) => (
   <div className="relative w-full overflow-auto">
@@ -28,12 +12,8 @@ const Table = React.forwardRef(({ className, ...props }, ref) => (
 ))
 Table.displayName = "Table"
 
-const TableHeader = React.forwardRef(({ className, variant, ...props }, ref) => (
-  <thead
-    ref={ref}
-    className={cn(tableVariants({ variant }), className)}
-    {...props}
-  />
+const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
+  <thead ref={ref} className={cn("[&_tr]:border-[#6F5AF6]", className)} {...props} />
 ))
 TableHeader.displayName = "TableHeader"
 
@@ -49,10 +29,7 @@ TableBody.displayName = "TableBody"
 const TableFooter = React.forwardRef(({ className, ...props }, ref) => (
   <tfoot
     ref={ref}
-    className={cn(
-      "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-      className
-    )}
+    className={cn("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className)}
     {...props}
   />
 ))
@@ -74,7 +51,7 @@ const TableHead = React.forwardRef(({ className, ...props }, ref) => (
   <th
     ref={ref}
     className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-white [&:has([role=checkbox])]:pr-0",
+      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
       className
     )}
     {...props}
@@ -99,5 +76,4 @@ export {
   TableHead,
   TableRow,
   TableCell,
-  tableVariants,
 }

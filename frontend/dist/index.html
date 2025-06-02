@@ -1,24 +1,31 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>10 Minute Mail - Temporary Email Service</title>
     <meta name="description" content="Get instant temporary email addresses for secure, spam-free sign-ups." />
-    <script type="module" crossorigin src="/assets/index-a5f90299.js"></script>
-    <link rel="stylesheet" href="/assets/index-666c2644.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-23f720f6.js"></script>
+    <link rel="stylesheet" href="/assets/index-299e8868.css">
     <script type="module">
 window.onerror = (message, source, lineno, colno, errorObj) => {
-	window.parent.postMessage({
-		type: 'horizons-runtime-error',
-		message,
+	const errorDetails = errorObj ? JSON.stringify({
+		name: errorObj.name,
+		message: errorObj.message,
+		stack: errorObj.stack,
 		source,
 		lineno,
 		colno,
-		error: errorObj && errorObj.stack
+	}) : null;
+
+	window.parent.postMessage({
+		type: 'horizons-runtime-error',
+		message,
+		error: errorDetails
 	}, '*');
 };
 </script>
@@ -73,7 +80,19 @@ const originalConsoleError = console.error;
 console.error = function(...args) {
 	originalConsoleError.apply(console, args);
 
-	const errorString = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ').toLowerCase();
+	let errorString = '';
+
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+		if (arg instanceof Error) {
+			errorString = arg.stack || `${arg.name}: ${arg.message}`;
+			break;
+		}
+	}
+
+	if (!errorString) {
+		errorString = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
+	}
 
 	window.parent.postMessage({
 		type: 'horizons-console-error',
@@ -86,7 +105,7 @@ const originalFetch = window.fetch;
 
 window.fetch = function(...args) {
 	const url = args[0] instanceof Request ? args[0].url : args[0];
-	
+
 	// Skip WebSocket URLs
 	if (url.startsWith('ws:') || url.startsWith('wss:')) {
 		return originalFetch.apply(this, args);
@@ -97,8 +116,8 @@ window.fetch = function(...args) {
 			const contentType = response.headers.get('Content-Type') || '';
 
 			// Exclude HTML document responses
-			const isDocumentResponse = 
-				contentType.includes('text/html') || 
+			const isDocumentResponse =
+				contentType.includes('text/html') ||
 				contentType.includes('application/xhtml+xml');
 
 			if (!response.ok && !isDocumentResponse) {
