@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
 
 const app = express();
 app.use(express.json());
@@ -375,6 +378,14 @@ app.post('/api/email/renew', async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+
+// Serve built frontend in production (same-origin, no proxy needed)
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DIST = join(__dirname, '../frontend/dist');
+if (existsSync(DIST)) {
+  app.use(express.static(DIST));
+  app.get('*', (req, res) => res.sendFile(join(DIST, 'index.html')));
+}
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Backend → http://localhost:${PORT}`));
