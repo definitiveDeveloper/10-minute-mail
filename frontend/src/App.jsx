@@ -302,7 +302,7 @@ function AppContent() {
             <div className="w-full sm:flex-1">
               {emailLoading ? (
                 <div className="h-14 rounded-lg bg-muted/40 animate-pulse flex items-center justify-center text-muted-foreground text-sm">
-                  Generating your secure mailbox…
+                  {t("generatingMailbox")}
                 </div>
               ) : (
                 <EmailDisplay email={currentEmail} />
@@ -313,18 +313,18 @@ function AppContent() {
               size="sm"
               onClick={handleNewAddress}
               disabled={emailLoading}
-              title="Get a new address"
+              title={t("newAddressButton")}
               className="flex-shrink-0 gap-1.5 text-muted-foreground hover:text-foreground"
             >
               <RotateCcw className="h-4 w-4" />
-              <span className="text-xs">New Address</span>
+              <span className="text-xs">{t("newAddressButton")}</span>
             </Button>
           </div>
 
           {/* IP-locked badge */}
           <div className="mt-3 flex items-center justify-center">
             <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/30 border border-border rounded-full px-3 py-1">
-              <span>🔒</span> Your mailbox is IP-locked for this session
+              <span>🔒</span> {t("ipLockedBadge")}
             </span>
           </div>
 
@@ -379,8 +379,8 @@ function AppContent() {
                 <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
                 <span>
                   {assigningCountdown > 0
-                    ? `New email being assigned in ${assigningCountdown}s…`
-                    : "Assigning your new email address…"}
+                    ? t("assigningIn", { count: assigningCountdown })
+                    : t("newEmailAssigning")}
                 </span>
               </motion.div>
             )}
