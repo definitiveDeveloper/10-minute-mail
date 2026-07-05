@@ -162,5 +162,9 @@
   "blog5Category": "개발자 가이드",
   "blog5ReadTime": "4분 읽기",
   "blog5Title": "개발자를 위한 10 Minute Mail: 이메일 플로우 손쉽게 테스트",
-  "blog5Excerpt": "등록 플로우마다 테스트용 Gmail 계정을 만드는 데 지치셨나요? 개발자들이 일회용 이메일을 활용해 QA를 가속화하는 방법을 알아보세요."
+  "blog5Excerpt": "등록 플로우마다 테스트용 Gmail 계정을 만드는 데 지치셨나요? 개발자들이 일회용 이메일을 활용해 QA를 가속화하는 방법을 알아보세요.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "새로 고침",
+  "inboxMessageCount_one": "{{count}}개의 메시지",
+  "inboxMessageCount_other": "{{count}}개의 메시지"
 }

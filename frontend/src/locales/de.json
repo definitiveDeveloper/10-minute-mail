@@ -162,5 +162,9 @@
   "blog5Category": "Entwickler-Ratgeber",
   "blog5ReadTime": "4 Min. Lesezeit",
   "blog5Title": "10-Minute Mail für Entwickler: E-Mail-Flows testen ohne Aufwand",
-  "blog5Excerpt": "Müde davon, für jeden Registrierungsflow neue Gmail-Testaccounts zu erstellen? So nutzen Entwickler Wegwerf-E-Mails zur Beschleunigung von QA."
+  "blog5Excerpt": "Müde davon, für jeden Registrierungsflow neue Gmail-Testaccounts zu erstellen? So nutzen Entwickler Wegwerf-E-Mails zur Beschleunigung von QA.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Aktualisieren",
+  "inboxMessageCount_one": "{{count}} Nachricht",
+  "inboxMessageCount_other": "{{count}} Nachrichten"
 }

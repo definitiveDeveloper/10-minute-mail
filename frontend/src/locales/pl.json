@@ -162,5 +162,9 @@
   "blog5Category": "Przewodnik dla deweloperów",
   "blog5ReadTime": "4 min czytania",
   "blog5Title": "10-Minute Mail dla deweloperów: Testuj przepływy e-mail bez kłopotów",
-  "blog5Excerpt": "Masz dość tworzenia testowych kont Gmail dla każdego przepływu rejestracji? Oto jak deweloperzy używają jednorazowej poczty do przyspieszenia QA."
+  "blog5Excerpt": "Masz dość tworzenia testowych kont Gmail dla każdego przepływu rejestracji? Oto jak deweloperzy używają jednorazowej poczty do przyspieszenia QA.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Odśwież",
+  "inboxMessageCount_one": "{{count}} wiadomość",
+  "inboxMessageCount_other": "{{count}} wiadomości"
 }

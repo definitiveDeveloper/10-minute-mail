@@ -162,5 +162,9 @@
   "blog5Category": "Guía para desarrolladores",
   "blog5ReadTime": "4 min de lectura",
   "blog5Title": "10-Minute Mail para desarrolladores: Prueba flujos de correo sin complicaciones",
-  "blog5Excerpt": "¿Cansado de crear cuentas de Gmail de prueba para cada flujo de registro? Así es como los desarrolladores usan el correo desechable para acelerar el control de calidad."
+  "blog5Excerpt": "¿Cansado de crear cuentas de Gmail de prueba para cada flujo de registro? Así es como los desarrolladores usan el correo desechable para acelerar el control de calidad.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Actualizar",
+  "inboxMessageCount_one": "{{count}} mensaje",
+  "inboxMessageCount_other": "{{count}} mensajes"
 }

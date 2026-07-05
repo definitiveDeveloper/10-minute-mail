@@ -359,7 +359,7 @@ function AppContent() {
                     className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md rounded-full gap-1.5 px-5 whitespace-nowrap"
                   >
                     <Clock className="h-4 w-4" />
-                    +10 More Minutes
+                    {t("extendSessionButton10MoreMinutes")}
                   </Button>
                 </motion.div>
               )}

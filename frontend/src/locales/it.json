@@ -162,5 +162,9 @@
   "blog5Category": "Guida per sviluppatori",
   "blog5ReadTime": "4 min di lettura",
   "blog5Title": "10-Minute Mail per sviluppatori: Testa i flussi e-mail senza problemi",
-  "blog5Excerpt": "Stanco di creare account Gmail di test per ogni flusso di registrazione? Ecco come gli sviluppatori usano l'e-mail usa e getta per accelerare il QA."
+  "blog5Excerpt": "Stanco di creare account Gmail di test per ogni flusso di registrazione? Ecco come gli sviluppatori usano l'e-mail usa e getta per accelerare il QA.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Aggiorna",
+  "inboxMessageCount_one": "{{count}} messaggio",
+  "inboxMessageCount_other": "{{count}} messaggi"
 }

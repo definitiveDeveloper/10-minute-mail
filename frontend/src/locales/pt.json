@@ -162,5 +162,9 @@
   "blog5Category": "Guia do desenvolvedor",
   "blog5ReadTime": "4 min de leitura",
   "blog5Title": "10-Minute Mail para desenvolvedores: Teste fluxos de e-mail sem complicação",
-  "blog5Excerpt": "Cansado de criar contas de Gmail de teste para cada fluxo de cadastro? Veja como desenvolvedores usam e-mail descartável para acelerar o QA."
+  "blog5Excerpt": "Cansado de criar contas de Gmail de teste para cada fluxo de cadastro? Veja como desenvolvedores usam e-mail descartável para acelerar o QA.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Atualizar",
+  "inboxMessageCount_one": "{{count}} mensagem",
+  "inboxMessageCount_other": "{{count}} mensagens"
 }

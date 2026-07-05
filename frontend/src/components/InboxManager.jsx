@@ -172,7 +172,7 @@ export default function InboxManager({ currentEmail }) {
           className="mt-6 gap-2"
         >
           <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-          {refreshCooldown ? `Refresh in ${cooldownLeft}s` : 'Refresh'}
+          {refreshCooldown ? `${cooldownLeft}s` : t('inboxRefresh')}
         </Button>
       </div>
     );
@@ -196,7 +196,7 @@ export default function InboxManager({ currentEmail }) {
             {isLoading && emails.length > 0 ? (
               <span className="text-xs text-primary">{t('inboxRefreshing')}…</span>
             ) : (
-              <span className="text-xs text-muted-foreground">{emails.length} message{emails.length !== 1 ? 's' : ''}</span>
+              <span className="text-xs text-muted-foreground">{t(emails.length === 1 ? 'inboxMessageCount_one' : 'inboxMessageCount_other', { count: emails.length })}</span>
             )}
             <Button
               onClick={handleRefresh}
@@ -206,7 +206,7 @@ export default function InboxManager({ currentEmail }) {
               className="gap-1.5 text-xs h-7 px-2"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-              {refreshCooldown ? `${cooldownLeft}s` : 'Refresh'}
+              {refreshCooldown ? `${cooldownLeft}s` : t('inboxRefresh')}
             </Button>
           </div>
 

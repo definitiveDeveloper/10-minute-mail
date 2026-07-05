@@ -162,5 +162,9 @@
   "blog5Category": "Guide développeur",
   "blog5ReadTime": "4 min de lecture",
   "blog5Title": "10-Minute Mail pour les développeurs : Testez les flux e-mail sans tracas",
-  "blog5Excerpt": "Fatigué de créer des comptes Gmail de test pour chaque flux d'inscription ? Voici comment les développeurs utilisent l'e-mail jetable pour accélérer le QA."
+  "blog5Excerpt": "Fatigué de créer des comptes Gmail de test pour chaque flux d'inscription ? Voici comment les développeurs utilisent l'e-mail jetable pour accélérer le QA.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Actualiser",
+  "inboxMessageCount_one": "{{count}} message",
+  "inboxMessageCount_other": "{{count}} messages"
 }

@@ -162,5 +162,9 @@
   "newAddressButton": "New Address",
   "ipLockedBadge": "Your mailbox is IP-locked for this session",
   "assigningIn": "New email being assigned in {{count}}s…",
-  "newEmailAssigning": "Assigning your new email address…"
+  "newEmailAssigning": "Assigning your new email address…",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Refresh",
+  "inboxMessageCount_one": "{{count}} message",
+  "inboxMessageCount_other": "{{count}} messages"
 }

@@ -162,5 +162,9 @@
   "blog5Category": "Ontwikkelaarsgids",
   "blog5ReadTime": "4 min lezen",
   "blog5Title": "10-Minute Mail voor ontwikkelaars: Test e-mailflows zonder gedoe",
-  "blog5Excerpt": "Moe van het aanmaken van test-Gmail-accounts voor elke registratiestroom? Zo gebruiken ontwikkelaars wegwerp-e-mail om QA te versnellen."
+  "blog5Excerpt": "Moe van het aanmaken van test-Gmail-accounts voor elke registratiestroom? Zo gebruiken ontwikkelaars wegwerp-e-mail om QA te versnellen.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Vernieuwen",
+  "inboxMessageCount_one": "{{count}} bericht",
+  "inboxMessageCount_other": "{{count}} berichten"
 }

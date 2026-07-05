@@ -162,5 +162,9 @@
   "blog5Category": "Geliştirici Rehberi",
   "blog5ReadTime": "4 dakika okuma",
   "blog5Title": "Geliştiriciler İçin 10-Minute Mail: E-posta Akışlarını Zahmetsizce Test Edin",
-  "blog5Excerpt": "Her kayıt akışı için test Gmail hesapları oluşturmaktan sıkıldınız mı? İşte geliştiricilerin QA'yı hızlandırmak için tek kullanımlık e-postayı nasıl kullandığı."
+  "blog5Excerpt": "Her kayıt akışı için test Gmail hesapları oluşturmaktan sıkıldınız mı? İşte geliştiricilerin QA'yı hızlandırmak için tek kullanımlık e-postayı nasıl kullandığı.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "Yenile",
+  "inboxMessageCount_one": "{{count}} mesaj",
+  "inboxMessageCount_other": "{{count}} mesaj"
 }

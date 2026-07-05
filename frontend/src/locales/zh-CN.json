@@ -162,5 +162,9 @@
   "blog5Category": "开发者指南",
   "blog5ReadTime": "4分钟阅读",
   "blog5Title": "开发者版10分钟邮箱：轻松测试邮件流程",
-  "blog5Excerpt": "厌倦了为每个注册流程创建测试Gmail账户？以下是开发者如何使用一次性邮件加速质量保证的方法。"
+  "blog5Excerpt": "厌倦了为每个注册流程创建测试Gmail账户？以下是开发者如何使用一次性邮件加速质量保证的方法。",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "刷新",
+  "inboxMessageCount_one": "{{count}} 封邮件",
+  "inboxMessageCount_other": "{{count}} 封邮件"
 }

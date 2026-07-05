@@ -162,5 +162,9 @@
   "blog5Category": "開発者向けガイド",
   "blog5ReadTime": "4分で読める",
   "blog5Title": "開発者向け10 Minute Mail：メールフローを手軽にテストする",
-  "blog5Excerpt": "登録フローごとにGmailのテストアカウントを作るのにうんざりしていますか？開発者が使い捨てメールでQAを加速する方法をご紹介します。"
+  "blog5Excerpt": "登録フローごとにGmailのテストアカウントを作るのにうんざりしていますか？開発者が使い捨てメールでQAを加速する方法をご紹介します。",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "更新",
+  "inboxMessageCount_one": "{{count}}件のメール",
+  "inboxMessageCount_other": "{{count}}件のメール"
 }

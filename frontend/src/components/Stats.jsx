@@ -37,7 +37,7 @@ export default function Stats() {
 
   const stats = [
     { numericEnd: 12, suffix: "M+", labelKey: "statEmailsGenerated" },
-    { numericEnd: 0,  suffix: " sec", labelKey: "statTimeToStart" },
+    { numericEnd: 0,  suffix: " " + t("statTimeSuffix"), labelKey: "statTimeToStart" },
     { numericEnd: 100, suffix: "%", labelKey: "statAnonymousFree" },
     { numericEnd: 45, suffix: "+", labelKey: "statCountriesServed" },
     { numericEnd: 5, prefix: "<", suffix: "s", labelKey: "statDeliveryTime" },

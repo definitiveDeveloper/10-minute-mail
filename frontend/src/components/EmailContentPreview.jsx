@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useMemo } from "react";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/context/I18nContext";
 
 function getThemeColors() {
   const s = getComputedStyle(document.documentElement);
@@ -65,6 +66,7 @@ function applyThemeToIframe(iframe) {
 }
 
 export default function EmailContentPreview({ email, isLoading }) {
+  const { t } = useI18n();
   const iframeRef = useRef(null);
 
   // On dark/light toggle, patch the iframe's theme style directly — no iframe reload.
@@ -84,7 +86,7 @@ export default function EmailContentPreview({ email, isLoading }) {
   if (!email) {
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground p-8">
-        <p className="text-sm text-center">Select an email to read it here.</p>
+        <p className="text-sm text-center">{t('emailContentNotSelected')}</p>
       </div>
     );
   }
@@ -93,7 +95,7 @@ export default function EmailContentPreview({ email, isLoading }) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3 text-muted-foreground p-8">
         <Loader2 className="h-7 w-7 animate-spin text-primary" />
-        <p className="text-sm">Loading…</p>
+        <p className="text-sm">{t('emailContentLoading')}</p>
       </div>
     );
   }
@@ -107,9 +109,9 @@ export default function EmailContentPreview({ email, isLoading }) {
           {email.subject}
         </h2>
         <div className="space-y-1 text-xs text-muted-foreground">
-          <p><span className="font-medium text-foreground/80">From:</span> {email.from}</p>
-          {email.to && <p><span className="font-medium text-foreground/80">To:</span> {email.to}</p>}
-          <p><span className="font-medium text-foreground/80">Date:</span> {new Date(email.date).toLocaleString()}</p>
+          <p><span className="font-medium text-foreground/80">{t('emailContentFrom')}:</span> {email.from}</p>
+          {email.to && <p><span className="font-medium text-foreground/80">{t('emailContentTo')}:</span> {email.to}</p>}
+          <p><span className="font-medium text-foreground/80">{t('emailContentDate')}:</span> {new Date(email.date).toLocaleString()}</p>
         </div>
       </div>
 

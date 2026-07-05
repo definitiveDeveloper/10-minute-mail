@@ -162,5 +162,9 @@
   "blog5Category": "دليل المطورين",
   "blog5ReadTime": "4 دقائق قراءة",
   "blog5Title": "10-Minute Mail للمطورين: اختبر تدفقات البريد بلا متاعب",
-  "blog5Excerpt": "هل سئمت من إنشاء حسابات Gmail تجريبية لكل تدفق تسجيل؟ إليك كيف يستخدم المطورون البريد المؤقت لتسريع اختبار الجودة."
+  "blog5Excerpt": "هل سئمت من إنشاء حسابات Gmail تجريبية لكل تدفق تسجيل؟ إليك كيف يستخدم المطورون البريد المؤقت لتسريع اختبار الجودة.",
+  "statTimeSuffix": "s",
+  "inboxRefresh": "تحديث",
+  "inboxMessageCount_one": "{{count}} رسالة",
+  "inboxMessageCount_other": "{{count}} رسائل"
 }
