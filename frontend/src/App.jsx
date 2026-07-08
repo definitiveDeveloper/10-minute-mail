@@ -138,8 +138,9 @@ function AppContent() {
   // Countdown timer with auto-refresh, extend button, and assigning-email logic
   useEffect(() => {
     if (!emailExpiry) return;
-    const interval = setInterval(() => {
-      const remaining = Math.max(0, emailExpiry - Date.now());
+    const tick = () => {
+      // Cap at EMAIL_LIFESPAN_MS so server clock-skew never shows > 10:00
+      const remaining = Math.min(EMAIL_LIFESPAN_MS, Math.max(0, emailExpiry - Date.now()));
       setTimeLeft(remaining);
 
       if (remaining <= EXTEND_THRESHOLD_MS && remaining > 0) {
@@ -164,6 +165,7 @@ function AppContent() {
             if (data.email) {
               setCurrentEmail(data.email);
               setEmailExpiry(data.assignedAt + EMAIL_LIFESPAN_MS);
+              setTimeLeft(EMAIL_LIFESPAN_MS);
               setShowExtendButton(false);
             }
           })
@@ -174,7 +176,9 @@ function AppContent() {
             setAssigningCountdown(0);
           });
       }
-    }, 1000);
+    };
+    tick(); // run immediately so display updates without waiting 1 s
+    const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, [emailExpiry]);
 
@@ -184,6 +188,7 @@ function AppContent() {
       const data = await res.json();
       if (data.email) {
         setEmailExpiry(data.assignedAt + EMAIL_LIFESPAN_MS);
+        setTimeLeft(EMAIL_LIFESPAN_MS);
         setShowExtendButton(false);
         setAssigningEmail(false);
         setAssigningCountdown(0);
@@ -205,6 +210,7 @@ function AppContent() {
       if (data.email) {
         setCurrentEmail(data.email);
         setEmailExpiry(data.assignedAt + EMAIL_LIFESPAN_MS);
+        setTimeLeft(EMAIL_LIFESPAN_MS);
       }
     } catch (err) {
       console.error(err);
