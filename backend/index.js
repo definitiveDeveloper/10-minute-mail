@@ -10,13 +10,15 @@ app.use(cors());
 app.set('trust proxy', true);
 
 // mail.tm and mail.gw share the same domain pool (same company).
-// Guerrilla Mail is an independent provider with a stable public API.
+// Maildrop.cc and Guerrilla Mail are independent public providers (no API key).
 const MAIL_APIS     = ['https://api.mail.tm', 'https://api.mail.gw'];
+const MAILDROP_API  = 'https://maildrop.cc/api/inbox';
 const GUERRILLAMAIL = 'https://api.guerrillamail.com/ajax.php';
 const LIFESPAN_MS   = 10 * 60 * 1000;
 
 // ip -> session object
 // mailtm:        { provider:'mailtm',        email, token, api, assignedAt }
+// maildrop:      { provider:'maildrop',      email, username, assignedAt }
 // guerrillamail: { provider:'guerrillamail', email, sidToken, assignedAt }
 const sessions = new Map();
 
@@ -35,6 +37,20 @@ function normalizeIp(ip) {
 }
 
 // ── Provisioning ─────────────────────────────────────────────────────────────
+
+async function provisionMaildrop() {
+  const username = randomStr(8) + Math.floor(Math.random() * 9000 + 1000);
+  // Probe the inbox endpoint before committing — catches blocks early.
+  const probe = await fetch(`${MAILDROP_API}/${username}`, {
+    headers: { Accept: 'application/json' },
+  });
+  if (!probe.ok) throw new Error(`Maildrop probe returned ${probe.status}`);
+  return {
+    provider: 'maildrop',
+    email: `${username}@maildrop.cc`,
+    username,
+  };
+}
 
 async function provisionGuerrillamail() {
   const res = await fetch(`${GUERRILLAMAIL}?f=get_email_address`, {
@@ -96,10 +112,12 @@ async function provisionMailtm() {
   throw lastErr;
 }
 
-// Try mail.tm/mail.gw first; fall back to Guerrilla Mail if it fails.
+// Cascade: mail.tm/mail.gw → Maildrop → Guerrilla Mail (last resort).
 async function provisionMailbox() {
   try   { return await provisionMailtm(); }
-  catch (err) { console.error('[provision] mailtm failed, trying Guerrilla Mail:', err.message); }
+  catch (err) { console.error('[provision] mailtm failed, trying Maildrop:', err.message); }
+  try   { return await provisionMaildrop(); }
+  catch (err) { console.error('[provision] Maildrop failed, trying Guerrilla Mail:', err.message); }
   return provisionGuerrillamail();
 }
 
@@ -157,6 +175,25 @@ app.get('/api/messages', async (req, res) => {
   try {
     const cutoff = new Date(session.assignedAt);
 
+    if (session.provider === 'maildrop') {
+      const r = await fetch(`${MAILDROP_API}/${session.username}`, {
+        headers: { Accept: 'application/json' },
+      });
+      if (!r.ok) throw new Error(`Maildrop returned ${r.status}`);
+      const list = await r.json();
+      const messages = (Array.isArray(list) ? list : [])
+        .filter(m => new Date(parseDate(m.date)) >= cutoff)
+        .map(m => ({
+          id:      String(m.id),
+          from:    m.headerfrom || m.from || 'unknown',
+          subject: m.subject || '(no subject)',
+          date:    parseDate(m.date),
+          intro:   '',
+          seen:    false,
+        }));
+      return res.json({ messages });
+    }
+
     if (session.provider === 'guerrillamail') {
       const r = await fetch(`${GUERRILLAMAIL}?f=get_email_list&offset=0&sid_token=${session.sidToken}`);
       if (!r.ok) throw new Error(`Guerrilla Mail returned ${r.status}`);
@@ -206,6 +243,25 @@ app.get('/api/messages/:id', async (req, res) => {
   if (!session) return res.status(404).json({ error: 'No active session for this IP' });
 
   try {
+    if (session.provider === 'maildrop') {
+      const r = await fetch(`${MAILDROP_API}/${session.username}/${req.params.id}`, {
+        headers: { Accept: 'application/json' },
+      });
+      if (!r.ok) throw new Error(`Maildrop returned ${r.status}`);
+      const m = await r.json();
+      const rawHtml = m.body || null;
+      return res.json({
+        id:      String(m.id),
+        from:    m.headerfrom || m.from || 'unknown',
+        to:      session.email,
+        subject: m.subject || '(no subject)',
+        date:    parseDate(m.date),
+        text:    rawHtml ? rawHtml.replace(/<[^>]*>/g, '') : '',
+        html:    rawHtml ? replaceEmbeddedSrcs(rawHtml, req.params.id) : null,
+        cidMap:  {},
+      });
+    }
+
     if (session.provider === 'guerrillamail') {
       const r = await fetch(`${GUERRILLAMAIL}?f=fetch_email&email_id=${req.params.id}&sid_token=${session.sidToken}`);
       if (!r.ok) throw new Error(`Guerrilla Mail returned ${r.status}`);
@@ -263,8 +319,8 @@ app.get('/api/messages/:id/att/:name', async (req, res) => {
 
   const name = decodeURIComponent(req.params.name).toLowerCase();
 
-  // Guerrilla Mail doesn't support embedded attachment proxying — nothing to serve.
-  if (session.provider === 'guerrillamail') return res.status(404).end();
+  // Maildrop and Guerrilla Mail don't support attachment proxying.
+  if (session.provider === 'maildrop' || session.provider === 'guerrillamail') return res.status(404).end();
 
   // mail.tm / mail.gw
   let attachments = attCache.get(`${ip}:${req.params.id}`);
