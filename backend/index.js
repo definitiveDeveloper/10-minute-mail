@@ -10,14 +10,14 @@ app.use(cors());
 app.set('trust proxy', true);
 
 // mail.tm and mail.gw share the same domain pool (same company).
-// 1secmail.com is an independent provider with 7 distinct domains.
-const MAIL_APIS  = ['https://api.mail.tm', 'https://api.mail.gw'];
-const ONESECMAIL = 'https://www.1secmail.com/api/v1/';
-const LIFESPAN_MS = 10 * 60 * 1000;
+// Guerrilla Mail is an independent provider with a stable public API.
+const MAIL_APIS     = ['https://api.mail.tm', 'https://api.mail.gw'];
+const GUERRILLAMAIL = 'https://api.guerrillamail.com/ajax.php';
+const LIFESPAN_MS   = 10 * 60 * 1000;
 
 // ip -> session object
-// mailtm:   { provider:'mailtm',   email, token, api, assignedAt }
-// 1secmail: { provider:'1secmail', email, login, domain, assignedAt }
+// mailtm:        { provider:'mailtm',        email, token, api, assignedAt }
+// guerrillamail: { provider:'guerrillamail', email, sidToken, assignedAt }
 const sessions = new Map();
 
 // Attachment metadata cache: `ip:msgId` → attachments[]
@@ -36,16 +36,17 @@ function normalizeIp(ip) {
 
 // ── Provisioning ─────────────────────────────────────────────────────────────
 
-async function provision1secmail() {
-  const res = await fetch(`${ONESECMAIL}?action=genRandomMailbox&count=1`);
-  if (!res.ok) throw new Error(`1secmail returned ${res.status}`);
-  const [address] = await res.json();
-  const at = address.indexOf('@');
+async function provisionGuerrillamail() {
+  const res = await fetch(`${GUERRILLAMAIL}?f=get_email_address`, {
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) throw new Error(`Guerrilla Mail returned ${res.status}`);
+  const data = await res.json();
+  if (!data.email_addr || !data.sid_token) throw new Error('Guerrilla Mail: unexpected response shape');
   return {
-    provider: '1secmail',
-    email: address,
-    login: address.slice(0, at),
-    domain: address.slice(at + 1),
+    provider: 'guerrillamail',
+    email: data.email_addr.trim(),
+    sidToken: data.sid_token,
   };
 }
 
@@ -95,19 +96,11 @@ async function provisionMailtm() {
   throw lastErr;
 }
 
-// Pick randomly: ~50% 1secmail (for domain diversity), ~50% mail.tm/mail.gw.
-// Falls back to the other if the chosen one fails.
+// Try mail.tm/mail.gw first; fall back to Guerrilla Mail if it fails.
 async function provisionMailbox() {
-  const try1sec = Math.random() < 0.5;
-  if (try1sec) {
-    try   { return await provision1secmail(); }
-    catch (err) { console.error('[provision] 1secmail failed, falling back:', err.message); }
-    return provisionMailtm();
-  } else {
-    try   { return await provisionMailtm(); }
-    catch (err) { console.error('[provision] mailtm failed, falling back:', err.message); }
-    return provision1secmail();
-  }
+  try   { return await provisionMailtm(); }
+  catch (err) { console.error('[provision] mailtm failed, trying Guerrilla Mail:', err.message); }
+  return provisionGuerrillamail();
 }
 
 function setSession(ip, data) {
@@ -164,19 +157,20 @@ app.get('/api/messages', async (req, res) => {
   try {
     const cutoff = new Date(session.assignedAt);
 
-    if (session.provider === '1secmail') {
-      const r = await fetch(`${ONESECMAIL}?action=getMessages&login=${session.login}&domain=${session.domain}`);
-      if (!r.ok) throw new Error(`1secmail returned ${r.status}`);
-      const list = await r.json();
-      const messages = (Array.isArray(list) ? list : [])
-        .filter(m => new Date(parseDate(m.date)) >= cutoff)
+    if (session.provider === 'guerrillamail') {
+      const r = await fetch(`${GUERRILLAMAIL}?f=get_email_list&offset=0&sid_token=${session.sidToken}`);
+      if (!r.ok) throw new Error(`Guerrilla Mail returned ${r.status}`);
+      const data = await r.json();
+      const list = Array.isArray(data.list) ? data.list : [];
+      const messages = list
+        .filter(m => new Date(parseInt(m.mail_timestamp, 10) * 1000) >= cutoff)
         .map(m => ({
-          id:      String(m.id),
-          from:    m.from || 'unknown',
-          subject: m.subject || '(no subject)',
-          date:    parseDate(m.date),
-          intro:   '',
-          seen:    false,
+          id:      String(m.mail_id),
+          from:    m.mail_from || 'unknown',
+          subject: m.mail_subject || '(no subject)',
+          date:    new Date(parseInt(m.mail_timestamp, 10) * 1000).toISOString(),
+          intro:   m.mail_excerpt || '',
+          seen:    m.mail_read === 1 || m.mail_read === '1',
         }));
       return res.json({ messages });
     }
@@ -212,38 +206,20 @@ app.get('/api/messages/:id', async (req, res) => {
   if (!session) return res.status(404).json({ error: 'No active session for this IP' });
 
   try {
-    if (session.provider === '1secmail') {
-      const r = await fetch(
-        `${ONESECMAIL}?action=readMessage&login=${session.login}&domain=${session.domain}&id=${req.params.id}`
-      );
-      if (!r.ok) throw new Error(`1secmail returned ${r.status}`);
+    if (session.provider === 'guerrillamail') {
+      const r = await fetch(`${GUERRILLAMAIL}?f=fetch_email&email_id=${req.params.id}&sid_token=${session.sidToken}`);
+      if (!r.ok) throw new Error(`Guerrilla Mail returned ${r.status}`);
       const m = await r.json();
 
-      const allAtts = m.attachments ?? [];
-      attCache.set(`${ip}:${req.params.id}`, allAtts);
-      setTimeout(() => attCache.delete(`${ip}:${req.params.id}`), 10 * 60 * 1000);
-
-      let processedHtml = m.htmlBody || null;
-      if (processedHtml) {
-        processedHtml = replaceEmbeddedSrcs(processedHtml, req.params.id);
-        // Also replace bare filename srcs for known attachments
-        for (const att of allAtts) {
-          const esc = att.filename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          processedHtml = processedHtml.replace(
-            new RegExp(`src=(["']?)${esc}\\1`, 'gi'),
-            (_, q) => `src="/api/messages/${req.params.id}/att/${encodeURIComponent(att.filename.toLowerCase())}"`
-          );
-        }
-      }
-
+      const rawHtml = m.mail_body || null;
       return res.json({
-        id:      String(m.id),
-        from:    m.from || 'unknown',
+        id:      String(m.mail_id),
+        from:    m.mail_from || 'unknown',
         to:      session.email,
-        subject: m.subject || '(no subject)',
-        date:    parseDate(m.date),
-        text:    m.textBody || m.body || '',
-        html:    processedHtml,
+        subject: m.mail_subject || '(no subject)',
+        date:    new Date(parseInt(m.mail_timestamp, 10) * 1000).toISOString(),
+        text:    rawHtml ? rawHtml.replace(/<[^>]*>/g, '') : '',
+        html:    rawHtml ? replaceEmbeddedSrcs(rawHtml, req.params.id) : null,
         cidMap:  {},
       });
     }
@@ -287,29 +263,8 @@ app.get('/api/messages/:id/att/:name', async (req, res) => {
 
   const name = decodeURIComponent(req.params.name).toLowerCase();
 
-  if (session.provider === '1secmail') {
-    // Find original-case filename from cache (1secmail download is case-sensitive)
-    let filename = name;
-    const cached = attCache.get(`${ip}:${req.params.id}`);
-    if (cached?.length) {
-      const match = cached.find(a => a.filename.toLowerCase() === name);
-      if (match) filename = match.filename;
-    }
-    try {
-      const url = `${ONESECMAIL}?action=download&login=${session.login}&domain=${session.domain}&id=${req.params.id}&file=${encodeURIComponent(filename)}`;
-      const attRes = await fetch(url);
-      if (!attRes.ok) return res.status(attRes.status).end();
-      const ext = filename.split('.').pop().toLowerCase();
-      const ct  = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif', webp:'image/webp', svg:'image/svg+xml', pdf:'application/pdf' }[ext] || 'application/octet-stream';
-      res.setHeader('Content-Type', ct);
-      res.setHeader('Cache-Control', 'private, max-age=300');
-      const buf = await attRes.arrayBuffer();
-      return res.send(Buffer.from(buf));
-    } catch (err) {
-      console.error('[1secmail att]', err.message);
-      return res.status(500).end();
-    }
-  }
+  // Guerrilla Mail doesn't support embedded attachment proxying — nothing to serve.
+  if (session.provider === 'guerrillamail') return res.status(404).end();
 
   // mail.tm / mail.gw
   let attachments = attCache.get(`${ip}:${req.params.id}`);
