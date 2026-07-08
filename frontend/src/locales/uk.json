@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Оновити",
   "inboxMessageCount_one": "{{count}} повідомлення",
-  "inboxMessageCount_other": "{{count}} повідомлень"
+  "inboxMessageCount_other": "{{count}} повідомлень",
+  "metaTitle": "10 Хвилин Пошта — Безкоштовна Тимчасова Email Адреса",
+  "metaDescription": "Отримайте безкоштовну тимчасову email адресу, дійсну 10 хвилин. Без реєстрації. Без спаму. 100% анонімно."
 }

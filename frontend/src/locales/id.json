@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Muat ulang",
   "inboxMessageCount_one": "{{count}} pesan",
-  "inboxMessageCount_other": "{{count}} pesan"
+  "inboxMessageCount_other": "{{count}} pesan",
+  "metaTitle": "10 Menit Mail — Alamat Email Sementara Gratis",
+  "metaDescription": "Dapatkan alamat email sementara gratis yang berlaku 10 menit. Tanpa pendaftaran. Tanpa spam. 100% anonim."
 }

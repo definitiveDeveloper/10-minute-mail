@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Atjaunināt",
   "inboxMessageCount_one": "{{count}} ziņojums",
-  "inboxMessageCount_other": "{{count}} ziņojumi"
+  "inboxMessageCount_other": "{{count}} ziņojumi",
+  "metaTitle": "10 Minūšu Pasts — Bezmaksas Pagāidu E-pasta Adrese",
+  "metaDescription": "Saņemiet bezmaksas pagāidu e-pasta adresi, kas darbojas 10 minūtes. Bez reģistrācijas. Bez surogātpasta. 100% anonīms."
 }

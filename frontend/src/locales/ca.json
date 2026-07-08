@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Actualitza",
   "inboxMessageCount_one": "{{count}} missatge",
-  "inboxMessageCount_other": "{{count}} missatges"
+  "inboxMessageCount_other": "{{count}} missatges",
+  "metaTitle": "10 Minuts Mail — Adreça de Correu Temporal Graüita",
+  "metaDescription": "Obteniu una adreça de correu temporal graüita que dura 10 minuts. Sense registre. Sense correu brossa. 100% anònim."
 }

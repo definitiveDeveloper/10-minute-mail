@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Osveži",
   "inboxMessageCount_one": "{{count}} sporočilo",
-  "inboxMessageCount_other": "{{count}} sporočila"
+  "inboxMessageCount_other": "{{count}} sporočila",
+  "metaTitle": "10 Minut Pošta — Brezplačen Začasni E-poštni Naslov",
+  "metaDescription": "Pridobite brezplačen začasni e-poštni naslov, ki velja 10 minut. Brez registracije. Brez neželene pošte. 100% anonimno."
 }

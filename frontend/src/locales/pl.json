@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Odśwież",
   "inboxMessageCount_one": "{{count}} wiadomość",
-  "inboxMessageCount_other": "{{count}} wiadomości"
+  "inboxMessageCount_other": "{{count}} wiadomości",
+  "metaTitle": "10 Minut Poczta — Bezpłatny Tymczasowy Adres Email",
+  "metaDescription": "Uzyskaj bezpłatny tymczasowy adres email ważny przez 10 minut. Bez rejestracji. Bez spamu. 100% anonimowy."
 }

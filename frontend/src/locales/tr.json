@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Yenile",
   "inboxMessageCount_one": "{{count}} mesaj",
-  "inboxMessageCount_other": "{{count}} mesaj"
+  "inboxMessageCount_other": "{{count}} mesaj",
+  "metaTitle": "10 Dakika Mail — Üretsiz Geçici E-posta Adresi",
+  "metaDescription": "10 dakika geçerli ücretsiz geçici bir e-posta adresi alın. Kayıt yok. Spam yok. %100 anonim."
 }

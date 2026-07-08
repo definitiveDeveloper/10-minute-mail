@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Làm mới",
   "inboxMessageCount_one": "{{count}} tin nhắn",
-  "inboxMessageCount_other": "{{count}} tin nhắn"
+  "inboxMessageCount_other": "{{count}} tin nhắn",
+  "metaTitle": "Email 10 Phút — Địa Chỉ Email Tạm Thời Miễn Phí",
+  "metaDescription": "Nhận địa chỉ email tạm thời miễn phí có hiệu lực trong 10 phút. Không đăng ký. Không spam. 100% ẩn danh."
 }

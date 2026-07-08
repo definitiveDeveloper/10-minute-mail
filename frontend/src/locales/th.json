@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "รีเฟรช",
   "inboxMessageCount_one": "{{count}} ข้อความ",
-  "inboxMessageCount_other": "{{count}} ข้อความ"
+  "inboxMessageCount_other": "{{count}} ข้อความ",
+  "metaTitle": "อีเมล 10 นาที — ที่อยู่อีเมลชั่วคราวฟรี",
+  "metaDescription": "รับที่อยู่อีเมลชั่วคราวฟรีที่ใช้งานได้ 10 นาที ไม่ต้องสมัคร ไม่มีสแปม ไม่เปิดเผยตัวตน 100%"
 }

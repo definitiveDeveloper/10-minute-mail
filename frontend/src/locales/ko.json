@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "새로 고침",
   "inboxMessageCount_one": "{{count}}개의 메시지",
-  "inboxMessageCount_other": "{{count}}개의 메시지"
+  "inboxMessageCount_other": "{{count}}개의 메시지",
+  "metaTitle": "10분 메일 — 무료 임시 이메일 주소",
+  "metaDescription": "10분 동안 유효한 무료 임시 이메일 주소를 받으세요. 회원가입 없음. 스팸 없음. 100% 익명."
 }

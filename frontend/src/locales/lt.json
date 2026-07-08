@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Atnaujinti",
   "inboxMessageCount_one": "{{count}} žinutė",
-  "inboxMessageCount_other": "{{count}} žinutės"
+  "inboxMessageCount_other": "{{count}} žinutės",
+  "metaTitle": "10 Minučių Paštas — Nemokamas Laikinas El. pašto Adresas",
+  "metaDescription": "Gaukite nemokamą laikanį el. pašto adresą, galiojantį 10 minučių. Be registracijos. Be šiukšlių. 100% anonimiškas."
 }

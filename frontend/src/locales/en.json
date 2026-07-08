@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Refresh",
   "inboxMessageCount_one": "{{count}} message",
-  "inboxMessageCount_other": "{{count}} messages"
+  "inboxMessageCount_other": "{{count}} messages",
+  "metaTitle": "10 Minute Mail — Free Disposable Temporary Email Address",
+  "metaDescription": "Get a free, instant temporary email address that lasts 10 minutes. No sign-up. No spam. 100% anonymous."
 }

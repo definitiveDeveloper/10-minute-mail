@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Rifresko",
   "inboxMessageCount_one": "{{count}} mesazh",
-  "inboxMessageCount_other": "{{count}} mesazhe"
+  "inboxMessageCount_other": "{{count}} mesazhe",
+  "metaTitle": "10 Minuta Mail — Adresë Emaili Të Përkohshëm Falas",
+  "metaDescription": "Merr një adresë emaili të përkohshëm dhe falas që zgjat 10 minuta. Pa regjistrim. Pa spam. 100% anonim."
 }

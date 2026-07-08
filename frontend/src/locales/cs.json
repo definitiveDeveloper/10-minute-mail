@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Obnovit",
   "inboxMessageCount_one": "{{count}} zpráva",
-  "inboxMessageCount_other": "{{count}} zprávy"
+  "inboxMessageCount_other": "{{count}} zprávy",
+  "metaTitle": "10 Minut Mail — Bezplatná Dočasná E-mailová Adresa",
+  "metaDescription": "Získejte bezplatnou dočasnou e-mailovou adresu platnou 10 minut. Žádná registrace. Žádný spam. 100% anonymní."
 }

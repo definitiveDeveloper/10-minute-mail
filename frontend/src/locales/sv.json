@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Uppdatera",
   "inboxMessageCount_one": "{{count}} meddelande",
-  "inboxMessageCount_other": "{{count}} meddelanden"
+  "inboxMessageCount_other": "{{count}} meddelanden",
+  "metaTitle": "10 Minuters Post — Gratis Tillfällig E-postadress",
+  "metaDescription": "Få en gratis tillfällig e-postadress som varar i 10 minuter. Ingen registrering. Ingen skräppost. 100% anonym."
 }

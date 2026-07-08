@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "更新",
   "inboxMessageCount_one": "{{count}}件のメール",
-  "inboxMessageCount_other": "{{count}}件のメール"
+  "inboxMessageCount_other": "{{count}}件のメール",
+  "metaTitle": "10分メール — 無料の一時的なメールアドレス",
+  "metaDescription": "10分間有効な無料の一時的なメールアドレスを取得できます。登録不要。スパムなし。100%匿名。"
 }

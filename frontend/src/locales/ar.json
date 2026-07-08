@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "تحديث",
   "inboxMessageCount_one": "{{count}} رسالة",
-  "inboxMessageCount_other": "{{count}} رسائل"
+  "inboxMessageCount_other": "{{count}} رسائل",
+  "metaTitle": "١٠ دقيقة بريد — عنوان بريد إلكتروني مؤقت مجاني",
+  "metaDescription": "احصل على عنوان بريد إلكتروني مؤقت ومجاني يدوم 10 دقائق. لا تسجيل. لا بريد مزعج. 100% مجهول."
 }

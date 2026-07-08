@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Vernieuwen",
   "inboxMessageCount_one": "{{count}} bericht",
-  "inboxMessageCount_other": "{{count}} berichten"
+  "inboxMessageCount_other": "{{count}} berichten",
+  "metaTitle": "10 Minuten Mail — Gratis Tijdelijk E-mailadres",
+  "metaDescription": "Ontvang een gratis tijdelijk e-mailadres dat 10 minuten geldig is. Geen registratie. Geen spam. 100% anoniem."
 }

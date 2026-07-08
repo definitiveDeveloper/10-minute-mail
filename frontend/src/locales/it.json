@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Aggiorna",
   "inboxMessageCount_one": "{{count}} messaggio",
-  "inboxMessageCount_other": "{{count}} messaggi"
+  "inboxMessageCount_other": "{{count}} messaggi",
+  "metaTitle": "10 Minuti Mail — Indirizzo Email Temporaneo Gratuito",
+  "metaDescription": "Ottieni un indirizzo email temporaneo gratuito valido per 10 minuti. Nessuna registrazione. Nessuno spam. 100% anonimo."
 }

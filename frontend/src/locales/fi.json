@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Päivitä",
   "inboxMessageCount_one": "{{count}} viesti",
-  "inboxMessageCount_other": "{{count}} viestiä"
+  "inboxMessageCount_other": "{{count}} viestiä",
+  "metaTitle": "10 Minuutin Posti — Ilmainen Tilapäinen Sähköpostiosoite",
+  "metaDescription": "Hanki ilmainen tilapäinen sähköpostiosoite, joka kestää 10 minuuttia. Ei rekisteröitymistä. Ei roskapostia. 100% anonyymi."
 }

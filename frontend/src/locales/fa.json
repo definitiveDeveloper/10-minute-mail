@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "بارگذاری مجدد",
   "inboxMessageCount_one": "{{count}} پیام",
-  "inboxMessageCount_other": "{{count}} پیام"
+  "inboxMessageCount_other": "{{count}} پیام",
+  "metaTitle": "ایمیل ۱۰ دقیقه‌ای — آدرس ایمیل موقت رایگان",
+  "metaDescription": "یک آدرس ایمیل موقت و رایگان که ۱۰ دقیقه اعتبار دارد دریافت کنید. بدون ثبت‌نام. بدون اسپم. ۱۰۰٪ ناشناس."
 }

@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Обнови",
   "inboxMessageCount_one": "{{count}} съобщение",
-  "inboxMessageCount_other": "{{count}} съобщения"
+  "inboxMessageCount_other": "{{count}} съобщения",
+  "metaTitle": "10 Минутна Поща — Безплатен Временен Имейл Адрес",
+  "metaDescription": "Получете безплатен временен имейл адрес, валиден 10 минути. Без регистрация. Без спам. 100% анонимен."
 }

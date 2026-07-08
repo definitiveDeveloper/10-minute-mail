@@ -90,6 +90,9 @@ const I18nContext = createContext();
 export const I18nProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
     if (typeof window !== 'undefined') {
+      // URL param ?lang=xx takes priority (lets crawlers index each locale)
+      const urlLang = new URLSearchParams(window.location.search).get('lang');
+      if (urlLang && translations[urlLang]) return urlLang;
       const savedLang = localStorage.getItem('appLanguage');
       return translations[savedLang] ? savedLang : 'en';
     }
@@ -100,12 +103,16 @@ export const I18nProvider = ({ children }) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('appLanguage', language);
       document.documentElement.lang = language;
-      // For RTL languages like Arabic or Hebrew
       if (['ar', 'he', 'fa'].includes(language)) {
         document.documentElement.dir = 'rtl';
       } else {
         document.documentElement.dir = 'ltr';
       }
+      // Sync document title and meta description for SEO
+      const t = translations[language] || translations.en;
+      if (t.metaTitle) document.title = t.metaTitle;
+      const descEl = document.querySelector('meta[name="description"]');
+      if (descEl && t.metaDescription) descEl.setAttribute('content', t.metaDescription);
     }
   }, [language]);
 

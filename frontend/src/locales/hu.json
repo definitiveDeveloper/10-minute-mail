@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Frissítés",
   "inboxMessageCount_one": "{{count}} üzenet",
-  "inboxMessageCount_other": "{{count}} üzenetek"
+  "inboxMessageCount_other": "{{count}} üzenetek",
+  "metaTitle": "10 Perces Posta — Ingyenes Ideiglenes E-mail Cím",
+  "metaDescription": "Szerezzen ingyenes ideiglenes e-mail címet, amely 10 percig érvényes. Regisztráció nélkül. Spam nélkül. 100% névtelen."
 }

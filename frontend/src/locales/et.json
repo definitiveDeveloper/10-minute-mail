@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Värskenda",
   "inboxMessageCount_one": "{{count}} sõnum",
-  "inboxMessageCount_other": "{{count}} sõnumit"
+  "inboxMessageCount_other": "{{count}} sõnumit",
+  "metaTitle": "10 Minuti Post — Tasuta Ajutine E-posti Aadress",
+  "metaDescription": "Hangi tasuta ajutine e-posti aadress, mis kehtib 10 minutit. Registreerimata. Rämpsposti vaba. 100% anonüümne."
 }

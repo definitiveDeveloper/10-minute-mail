@@ -334,6 +334,41 @@ app.post('/api/email/renew', async (req, res) => {
   }
 });
 
+// ── GET /sitemap.xml ──────────────────────────────────────────────────────────
+app.get('/sitemap.xml', (_req, res) => {
+  const BASE = 'https://10-minute-mail.online';
+  const today = new Date().toISOString().split('T')[0];
+  const langs = ['en','sq','ar','bg','ca','zh-CN','hr','cs','da','nl','eo','et','fi','fr','gl','de','el','he','hu','id','it','ja','ko','lv','lt','no','fa','pl','pt','ro','ru','sr','sk','sl','es','sv','th','tr','uk','vi'];
+  const langUrls = langs.map(lang => `
+  <url>
+    <loc>${BASE}/?lang=${lang}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>${lang === 'en' ? '0.9' : '0.7'}</priority>
+    <lastmod>${today}</lastmod>
+  </url>`).join('');
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>${BASE}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <lastmod>${today}</lastmod>
+  </url>${langUrls}
+</urlset>`);
+});
+
+// ── GET /robots.txt ───────────────────────────────────────────────────────────
+app.get('/robots.txt', (_req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.send(`User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://10-minute-mail.online/sitemap.xml`);
+});
+
 // Serve built frontend in production (same-origin, no proxy needed)
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, '../frontend/dist');

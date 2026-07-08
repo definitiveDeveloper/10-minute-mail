@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "רענן",
   "inboxMessageCount_one": "{{count}} הודעה",
-  "inboxMessageCount_other": "{{count}} הודעות"
+  "inboxMessageCount_other": "{{count}} הודעות",
+  "metaTitle": "10 דקות מייל — כתובת אימייל זמנית בחינם",
+  "metaDescription": "קבל כתובת אימייל זמנית ובחינם שתקפה ל-10 דקות. ללא הרשמה. ללא ספאם. 100% אנונימי."
 }

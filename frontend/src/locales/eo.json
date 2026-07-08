@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Ĝisdatigi",
   "inboxMessageCount_one": "{{count}} mesaĝo",
-  "inboxMessageCount_other": "{{count}} mesaĝoj"
+  "inboxMessageCount_other": "{{count}} mesaĝoj",
+  "metaTitle": "10 Minuta Poŝto — Senpaga Provizora Retpoŝtadreso",
+  "metaDescription": "Ricevu senpagan provizoran retpoŝtadreson kiu daŭras 10 minutojn. Sen registriĝo. Sen rubaĵo. 100% anonima."
 }

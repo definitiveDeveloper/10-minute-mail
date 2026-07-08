@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Ανανέωση",
   "inboxMessageCount_one": "{{count}} μήνυμα",
-  "inboxMessageCount_other": "{{count}} μηνύματα"
+  "inboxMessageCount_other": "{{count}} μηνύματα",
+  "metaTitle": "10 Λεπτά Mail — Δωρεάν Προσωρινή Διεύθυνση Email",
+  "metaDescription": "Αποκτήστε μια δωρεάν προσωρινή διεύθυνση email που διαρκεί 10 λεπτά. Χωρίς εγγραφή. Χωρίς ανεπιθύμητα. 100% ανώνυμη."
 }

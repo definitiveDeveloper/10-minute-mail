@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Обновить",
   "inboxMessageCount_one": "{{count}} сообщение",
-  "inboxMessageCount_other": "{{count}} сообщения"
+  "inboxMessageCount_other": "{{count}} сообщения",
+  "metaTitle": "10 Минут Почта — Бесплатный Временный Email Адрес",
+  "metaDescription": "Получите бесплатный временный email адрес, действующий 10 минут. Без регистрации. Без спама. 100% анонимно."
 }

@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Oppdater",
   "inboxMessageCount_one": "{{count}} melding",
-  "inboxMessageCount_other": "{{count}} meldinger"
+  "inboxMessageCount_other": "{{count}} meldinger",
+  "metaTitle": "10 Minutters Post — Gratis Midlertidig E-postadresse",
+  "metaDescription": "Få en gratis midlertidig e-postadresse som varer 10 minutter. Ingen registrering. Ingen spam. 100% anonym."
 }

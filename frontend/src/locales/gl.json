@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Actualizar",
   "inboxMessageCount_one": "{{count}} mensaxe",
-  "inboxMessageCount_other": "{{count}} mensaxes"
+  "inboxMessageCount_other": "{{count}} mensaxes",
+  "metaTitle": "10 Minutos Mail — Enderezo de Correo Temporal Graêto",
+  "metaDescription": "Obtén un enderezo de correo temporal graêto que dura 10 minutos. Sen rexistro. Sen spam. 100% anónimo."
 }

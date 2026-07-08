@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Освежи",
   "inboxMessageCount_one": "{{count}} порука",
-  "inboxMessageCount_other": "{{count}} поруке"
+  "inboxMessageCount_other": "{{count}} поруке",
+  "metaTitle": "10 Минута Пошта — Бесплатна Привремена Е-маил Адреса",
+  "metaDescription": "Добијте бесплатну привремену е-маил адресу важећу 10 минута. Без регистрације. Без непожељне поште. 100% анонимно."
 }

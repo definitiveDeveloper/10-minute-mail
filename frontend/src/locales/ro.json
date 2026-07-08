@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Actualizează",
   "inboxMessageCount_one": "{{count}} mesaj",
-  "inboxMessageCount_other": "{{count}} mesaje"
+  "inboxMessageCount_other": "{{count}} mesaje",
+  "metaTitle": "10 Minute Mail — Adresă de Email Temporară Gratuită",
+  "metaDescription": "Obțineți o adresă de email temporară gratuită valabilă 10 minute. Fără înregistrare. Fără spam. 100% anonim."
 }

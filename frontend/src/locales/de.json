@@ -166,5 +166,7 @@
   "statTimeSuffix": "s",
   "inboxRefresh": "Aktualisieren",
   "inboxMessageCount_one": "{{count}} Nachricht",
-  "inboxMessageCount_other": "{{count}} Nachrichten"
+  "inboxMessageCount_other": "{{count}} Nachrichten",
+  "metaTitle": "10 Minuten Mail — Kostenlose Temporäre E-Mail-Adresse",
+  "metaDescription": "Erhalten Sie eine kostenlose temporäre E-Mail-Adresse, die 10 Minuten gültig ist. Ohne Registrierung. Ohne Spam. 100% anonym."
 }
