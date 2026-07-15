@@ -140,7 +140,7 @@ export default function InboxManager({ currentEmail }) {
 
   if (!currentEmail) {
     return (
-      <div className="bg-muted/30 rounded-lg p-4 min-h-[160px] flex flex-col items-center justify-center text-muted-foreground">
+      <div className="bg-muted/30 rounded-lg p-4 min-h-[200px] flex flex-col items-center justify-center text-muted-foreground">
         <Inbox className="w-8 h-8 mb-2.5 text-primary/50" />
         <p className="text-sm font-semibold mb-1">{t('inboxInitializingTitle')}</p>
         <p className="text-[11px] text-center max-w-xs text-muted-foreground/70">{t('inboxInitializingDescription')}</p>
@@ -150,7 +150,7 @@ export default function InboxManager({ currentEmail }) {
 
   if (isLoading && emails.length === 0) {
     return (
-      <div className="bg-muted/30 rounded-lg p-4 min-h-[160px] flex flex-col items-center justify-center text-muted-foreground">
+      <div className="bg-muted/30 rounded-lg p-4 min-h-[200px] flex flex-col items-center justify-center text-muted-foreground">
         <Inbox className="w-8 h-8 mb-2.5 text-primary animate-pulse" />
         <p className="text-sm font-semibold mb-1">{t('inboxLoadingTitle')}</p>
         <p className="text-[11px] text-muted-foreground/70">{t('inboxLoadingDescription', { email: currentEmail })}</p>
@@ -159,11 +159,23 @@ export default function InboxManager({ currentEmail }) {
   }
 
   if (emails.length === 0 && !isLoading) {
+    // Split the description at the email address so the "New messages…" sentence
+    // falls on its own line regardless of locale.
+    const descFull = t('inboxEmptyDescription', { email: currentEmail });
+    const emailEnd = descFull.indexOf(currentEmail) + currentEmail.length;
+    const descLine1 = emailEnd > 0 ? descFull.slice(0, emailEnd) : descFull;
+    const descLine2 = emailEnd > 0
+      ? descFull.slice(emailEnd).replace(/^[\s.,!?;:。۔।．]+/, '').trim()
+      : '';
+
     return (
-      <div className="bg-muted/30 rounded-lg p-4 min-h-[160px] flex flex-col items-center justify-center text-muted-foreground">
+      <div className="bg-muted/30 rounded-lg p-4 min-h-[200px] flex flex-col items-center justify-center text-muted-foreground">
         <Inbox className="w-8 h-8 mb-2.5 text-primary/50" />
         <p className="text-sm font-semibold mb-1">{t('inboxEmptyTitle')}</p>
-        <p className="text-[11px] text-center max-w-xs text-muted-foreground/70">{t('inboxEmptyDescription', { email: currentEmail })}</p>
+        <p className="text-[11px] text-center max-w-xs text-muted-foreground/70">{descLine1}</p>
+        {descLine2 && (
+          <p className="text-[11px] text-center max-w-xs text-muted-foreground/70 mt-0.5">{descLine2}</p>
+        )}
         <Button
           onClick={handleRefresh}
           disabled={refreshCooldown}
@@ -181,7 +193,7 @@ export default function InboxManager({ currentEmail }) {
   const showPreviewPane = selectedEmail && window.innerWidth >= 768;
 
   return (
-    <div className={`bg-muted/30 rounded-lg min-h-[220px] flex ${showPreviewPane ? 'flex-row' : 'flex-col'} relative overflow-hidden`}>
+    <div className={`bg-muted/30 rounded-lg min-h-[260px] flex ${showPreviewPane ? 'flex-row' : 'flex-col'} relative overflow-hidden`}>
       <motion.div
         className="flex-1 overflow-hidden"
         animate={{
