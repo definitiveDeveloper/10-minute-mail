@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Globe, Clock, RotateCcw, Loader2 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,11 +7,11 @@ import EmailDisplay from "@/components/EmailDisplay";
 import InboxManager from "@/components/InboxManager";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
-import HowItWorks from "@/components/HowItWorks";
-import Stats from "@/components/Stats";
-import Features from "@/components/Features";
-import FAQ from "@/components/FAQ";
-import BlogSection from "@/components/BlogSection";
+const Stats      = lazy(() => import("@/components/Stats"));
+const HowItWorks = lazy(() => import("@/components/HowItWorks"));
+const Features   = lazy(() => import("@/components/Features"));
+const FAQ        = lazy(() => import("@/components/FAQ"));
+const BlogSection= lazy(() => import("@/components/BlogSection"));
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -239,19 +239,17 @@ function AppContent() {
   const [assigningCountdown, setAssigningCountdown] = useState(0);
   const autoRefreshingRef = useRef(false);
 
-  // Fetch (or resume) the IP-bound mailbox from the backend
+  // Use the prefetch started in <head> if available, otherwise fetch now.
   useEffect(() => {
     setEmailLoading(true);
-    fetch("/api/email")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.email) {
-          setCurrentEmail(data.email);
-          setEmailExpiry(data.assignedAt + EMAIL_LIFESPAN_MS);
-        }
-      })
-      .catch(console.error)
-      .finally(() => setEmailLoading(false));
+    const p = window.__emailPreload || fetch("/api/email").then((r) => r.json());
+    window.__emailPreload = null;
+    p.then((data) => {
+      if (data?.email) {
+        setCurrentEmail(data.email);
+        setEmailExpiry(data.assignedAt + EMAIL_LIFESPAN_MS);
+      }
+    }).catch(console.error).finally(() => setEmailLoading(false));
   }, []);
 
   // Countdown timer with auto-refresh, extend button, and assigning-email logic
@@ -473,119 +471,64 @@ function AppContent() {
             </Button>
           </div>
 
-          {/* IP-locked badge */}
-          <div className="mt-1.5 flex items-center justify-center">
-            <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/30 border border-border rounded-full px-2.5 py-0.5">
-              <span>🔒</span> {t("ipLockedBadge")}
-            </span>
-          </div>
-
-          {/* ── Circular countdown ring ── */}
-          <div className="mt-2 flex flex-col items-center gap-2">
-            <div className="relative" style={{ width: 76, height: 76 }}>
-              <svg
-                width={76}
-                height={76}
-                className="absolute inset-0"
-                style={{ transform: "rotate(-90deg)" }}
-                aria-hidden
-              >
-                {/* Track */}
-                <circle
-                  cx={38} cy={38} r={33}
-                  fill="none" strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="text-border/30"
-                />
-                {/* Draining arc */}
-                <motion.circle
-                  cx={38} cy={38} r={33}
-                  fill="none" strokeWidth={2.5}
-                  strokeLinecap="round"
+          {/* ── IP lock + drain timer (single compact row) ── */}
+          <div className="mt-2 w-full max-w-xl sm:max-w-3xl mx-auto">
+            <div className="flex items-center gap-2.5">
+              <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/50 shrink-0 select-none">
+                🔒 <span className="hidden sm:inline">{t("ipLockedBadge")}</span>
+              </span>
+              <div className="flex-1 h-[2px] bg-border/30 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full"
                   style={{
-                    stroke:
-                      timeLeft <= 5000
-                        ? "#ef4444"
-                        : timeLeft <= EXTEND_THRESHOLD_MS
-                        ? "#f97316"
-                        : "hsl(var(--primary))",
-                    strokeDasharray: 2 * Math.PI * 33,
-                    strokeDashoffset:
-                      2 * Math.PI * 33 * (1 - Math.min(1, timeLeft / EMAIL_LIFESPAN_MS)),
-                    transition: "stroke-dashoffset 0.95s linear, stroke 0.4s ease",
+                    width: `${Math.min(100, (timeLeft / EMAIL_LIFESPAN_MS) * 100)}%`,
+                    background:
+                      timeLeft <= 5000 ? "#ef4444"
+                      : timeLeft <= EXTEND_THRESHOLD_MS ? "#f97316"
+                      : "hsl(var(--primary))",
+                    transition: "width 0.95s linear, background 0.4s ease",
                   }}
-                  animate={
-                    timeLeft <= 5000
-                      ? { opacity: [1, 0.28, 1] }
-                      : { opacity: 1 }
-                  }
-                  transition={
-                    timeLeft <= 5000
-                      ? { duration: 0.55, repeat: Infinity }
-                      : { duration: 0.3 }
-                  }
+                  animate={timeLeft <= 5000 ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
+                  transition={timeLeft <= 5000 ? { duration: 0.55, repeat: Infinity } : { duration: 0.3 }}
                 />
-              </svg>
-
-              {/* Centre: time or spinner */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                {assigningEmail ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                ) : (
-                  <>
-                    <span
-                      className={`text-[15px] font-bold tabular-nums leading-none ${
-                        timeLeft <= 5000
-                          ? "text-destructive"
-                          : timeLeft <= EXTEND_THRESHOLD_MS
-                          ? "text-orange-500"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {formatTime(timeLeft)}
-                    </span>
-                    <span className="text-[8px] uppercase tracking-widest text-muted-foreground/40 mt-0.5">
-                      left
-                    </span>
-                  </>
-                )}
               </div>
+              {assigningEmail ? (
+                <Loader2 className="h-3 w-3 animate-spin text-primary shrink-0" />
+              ) : (
+                <span className={`text-[10px] tabular-nums font-medium shrink-0 ${
+                  timeLeft <= 5000 ? "text-destructive"
+                  : timeLeft <= EXTEND_THRESHOLD_MS ? "text-orange-500"
+                  : "text-muted-foreground/50"
+                }`}>
+                  {formatTime(timeLeft)}
+                </span>
+              )}
             </div>
 
-            {/* Assign message */}
             <AnimatePresence>
-              {assigningEmail && (
-                <motion.p
-                  initial={{ opacity: 0, y: 4 }}
+              {(showExtendButton || (assigningEmail && assigningCountdown > 0)) && (
+                <motion.div
+                  className="flex items-center justify-center gap-2 mt-1.5"
+                  initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.2 }}
-                  className="text-xs text-muted-foreground/70 text-center"
                 >
-                  {assigningCountdown > 0
-                    ? t("assigningIn", { count: assigningCountdown })
-                    : t("newEmailAssigning")}
-                </motion.p>
-              )}
-            </AnimatePresence>
-
-            {/* Extend button */}
-            <AnimatePresence>
-              {showExtendButton && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6, scale: 0.92 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 6, scale: 0.92 }}
-                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
-                >
-                  <Button
-                    onClick={extendEmailSession}
-                    size="sm"
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md rounded-full gap-1.5 px-5 whitespace-nowrap"
-                  >
-                    <Clock className="h-4 w-4" />
-                    {t("extendSessionButton10MoreMinutes")}
-                  </Button>
+                  {assigningEmail && assigningCountdown > 0 && (
+                    <span className="text-[10px] text-muted-foreground/60">
+                      {t("assigningIn", { count: assigningCountdown })}
+                    </span>
+                  )}
+                  {showExtendButton && (
+                    <Button
+                      onClick={extendEmailSession}
+                      size="sm"
+                      className="h-6 text-[10px] bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm rounded-full gap-1 px-3 whitespace-nowrap"
+                    >
+                      <Clock className="h-3 w-3" />
+                      {t("extendSessionButton10MoreMinutes")}
+                    </Button>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -600,6 +543,7 @@ function AppContent() {
         </motion.div>
       </div>
 
+      <Suspense fallback={null}>
       {/* ── Stats ── */}
       <Stats />
 
@@ -622,23 +566,24 @@ function AppContent() {
 
       {/* ── Blog ── */}
       <BlogSection />
+      </Suspense>
 
       {/* ── Divider ── */}
       <div className="section-divider" />
 
       {/* ── Testimonials ── */}
-      <section className="py-16 sm:py-24 container mx-auto px-4 sm:px-6">
+      <section className="py-12 sm:py-16 container mx-auto px-4 sm:px-6">
         <motion.div
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-8 sm:mb-10"
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
           variants={fadeIn}
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
             {t("testimonialsHeading")}
           </h2>
-          <p className="text-muted-foreground max-w-lg sm:max-w-2xl mx-auto text-base sm:text-lg">
+          <p className="text-muted-foreground max-w-lg sm:max-w-2xl mx-auto text-sm sm:text-base">
             {t("testimonialsSubheading")}
           </p>
         </motion.div>
@@ -699,8 +644,9 @@ function AppContent() {
       {/* ── Divider ── */}
       <div className="section-divider" />
 
-      {/* ── FAQ ── */}
-      <FAQ />
+      <Suspense fallback={null}>
+        <FAQ />
+      </Suspense>
 
       {/* ── Footer ── */}
       <footer className="border-t border-border py-12">

@@ -111,6 +111,9 @@
     <meta name="theme-color" content="#0f172a" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
 
+    <!-- Prefetch email API before React boots so the address appears instantly -->
+    <script>window.__emailPreload=fetch('/api/email').then(function(r){return r.json();}).catch(function(){return null;});</script>
+
     <!-- JSON-LD: WebApplication -->
     <script type="application/ld+json">
     {
