@@ -480,29 +480,102 @@ function AppContent() {
             </span>
           </div>
 
-          {/* Timer row — extend button appears inline at 2:00 */}
-          <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <div className="flex items-center gap-2 text-lg">
-              <span className="font-bold text-muted-foreground">{t("timeLeft")}:</span>
-              <span
-                className={`font-bold tabular-nums transition-colors duration-300 ${
-                  timeLeft <= 5000
-                    ? "text-destructive animate-pulse"
-                    : timeLeft <= EXTEND_THRESHOLD_MS
-                    ? "text-orange-500"
-                    : "text-primary"
-                }`}
+          {/* ── Circular countdown ring ── */}
+          <div className="mt-6 flex flex-col items-center gap-3">
+            <div className="relative" style={{ width: 76, height: 76 }}>
+              <svg
+                width={76}
+                height={76}
+                className="absolute inset-0"
+                style={{ transform: "rotate(-90deg)" }}
+                aria-hidden
               >
-                {formatTime(timeLeft)}
-              </span>
+                {/* Track */}
+                <circle
+                  cx={38} cy={38} r={33}
+                  fill="none" strokeWidth={2.5}
+                  stroke="currentColor"
+                  className="text-border/30"
+                />
+                {/* Draining arc */}
+                <motion.circle
+                  cx={38} cy={38} r={33}
+                  fill="none" strokeWidth={2.5}
+                  strokeLinecap="round"
+                  style={{
+                    stroke:
+                      timeLeft <= 5000
+                        ? "#ef4444"
+                        : timeLeft <= EXTEND_THRESHOLD_MS
+                        ? "#f97316"
+                        : "hsl(var(--primary))",
+                    strokeDasharray: 2 * Math.PI * 33,
+                    strokeDashoffset:
+                      2 * Math.PI * 33 * (1 - Math.min(1, timeLeft / EMAIL_LIFESPAN_MS)),
+                    transition: "stroke-dashoffset 0.95s linear, stroke 0.4s ease",
+                  }}
+                  animate={
+                    timeLeft <= 5000
+                      ? { opacity: [1, 0.28, 1] }
+                      : { opacity: 1 }
+                  }
+                  transition={
+                    timeLeft <= 5000
+                      ? { duration: 0.55, repeat: Infinity }
+                      : { duration: 0.3 }
+                  }
+                />
+              </svg>
+
+              {/* Centre: time or spinner */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                {assigningEmail ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                ) : (
+                  <>
+                    <span
+                      className={`text-[15px] font-bold tabular-nums leading-none ${
+                        timeLeft <= 5000
+                          ? "text-destructive"
+                          : timeLeft <= EXTEND_THRESHOLD_MS
+                          ? "text-orange-500"
+                          : "text-foreground"
+                      }`}
+                    >
+                      {formatTime(timeLeft)}
+                    </span>
+                    <span className="text-[8px] uppercase tracking-widest text-muted-foreground/40 mt-0.5">
+                      left
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
 
+            {/* Assign message */}
+            <AnimatePresence>
+              {assigningEmail && (
+                <motion.p
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-xs text-muted-foreground/70 text-center"
+                >
+                  {assigningCountdown > 0
+                    ? t("assigningIn", { count: assigningCountdown })
+                    : t("newEmailAssigning")}
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            {/* Extend button */}
             <AnimatePresence>
               {showExtendButton && (
                 <motion.div
-                  initial={{ opacity: 0, x: 8, scale: 0.92 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, x: 8, scale: 0.92 }}
+                  initial={{ opacity: 0, y: 6, scale: 0.92 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.92 }}
                   transition={{ type: "spring", stiffness: 320, damping: 22 }}
                 >
                   <Button
@@ -517,26 +590,6 @@ function AppContent() {
               )}
             </AnimatePresence>
           </div>
-
-          {/* Assigning-new-email countdown */}
-          <AnimatePresence>
-            {assigningEmail && (
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.25 }}
-                className="mt-3 flex items-center justify-center gap-2 text-sm text-muted-foreground"
-              >
-                <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
-                <span>
-                  {assigningCountdown > 0
-                    ? t("assigningIn", { count: assigningCountdown })
-                    : t("newEmailAssigning")}
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           <CoffeeWhisper />
 
