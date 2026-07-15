@@ -500,7 +500,7 @@ function AppContent() {
             </Button>
           </div>
 
-          {/* ── IP lock badge + timer + inline extend ── */}
+          {/* ── IP lock badge + timer ── */}
           <div className="mt-1.5 w-full max-w-xl sm:max-w-3xl mx-auto flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground/45 select-none">
             <span>🔒</span>
             <span>{t("ipLockedBadge")}</span>
@@ -512,24 +512,6 @@ function AppContent() {
                 {formatTime(timeLeft)}
               </span>
             )}
-            <AnimatePresence>
-              {showExtendButton && (
-                <motion.button
-                  key="extend"
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -6 }}
-                  transition={{ duration: 0.25 }}
-                  onClick={extendEmailSession}
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.93 }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-semibold hover:bg-amber-600 active:scale-95 transition-colors cursor-pointer shadow-sm"
-                >
-                  <Clock className="h-2.5 w-2.5" />
-                  <span>+10 min</span>
-                </motion.button>
-              )}
-            </AnimatePresence>
           </div>
 
           {/* ── Drain bar — full-width, standalone ── */}
@@ -564,6 +546,30 @@ function AppContent() {
               )}
             </AnimatePresence>
           </div>
+
+          {/* ── Extend session button — appears when time is running low ── */}
+          <AnimatePresence>
+            {showExtendButton && (
+              <motion.div
+                key="extend-btn-row"
+                initial={{ opacity: 0, y: -8, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: -8, height: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="flex justify-center mt-2"
+              >
+                <motion.button
+                  onClick={extendEmailSession}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2 px-5 py-1.5 rounded-full bg-amber-500 text-white text-xs font-semibold hover:bg-amber-600 transition-colors cursor-pointer shadow-md shadow-amber-500/30 border border-amber-400"
+                >
+                  <Clock className="h-3.5 w-3.5" />
+                  <span>+10 minutes</span>
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Inbox */}
           <div className="mt-2">

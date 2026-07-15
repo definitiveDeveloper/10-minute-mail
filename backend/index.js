@@ -226,7 +226,37 @@ app.get('/api/messages/:id', async (req, res) => {
       let gmText = '';
 
       if (rawHtml) {
-        gmHtml = replaceEmbeddedSrcs(rawHtml, req.params.id);
+        // Build data URIs from any inline attachments Guerrilla Mail includes
+        const atts = Array.isArray(m.att) ? m.att : [];
+        const gmCids = {};
+        for (const att of atts) {
+          if (!att.cid || !att.data) continue;
+          const cid = att.cid.replace(/^<|>$/g, '').toLowerCase();
+          const nameOnly = cid.split('@')[0];
+          const mime = att.t || 'application/octet-stream';
+          const uri = `data:${mime};base64,${att.data}`;
+          if (cid) gmCids[cid] = uri;
+          if (nameOnly) gmCids[nameOnly] = uri;
+          if (att.filename) gmCids[att.filename.toLowerCase()] = uri;
+        }
+        // Replace cid:/attachment: srcs with data URIs (blank data: if unknown)
+        gmHtml = rawHtml
+          .replace(
+            /src=(["']?)(?:cid:|attachment:)([^"'\s>@]*)(?:@[^"'\s>]*)?\1/gi,
+            (match, q, name) => {
+              const key = name.toLowerCase();
+              const uri = gmCids[key] || gmCids[key.replace(/\.[^.]+$/, '')];
+              return uri ? `src="${uri}"` : 'src="data:,"';
+            }
+          )
+          .replace(
+            /url\((["']?)(?:cid:|attachment:)([^"'\s)@]*)(?:@[^"'\s)]*)?\1\)/gi,
+            (match, q, name) => {
+              const key = name.toLowerCase();
+              const uri = gmCids[key] || gmCids[key.replace(/\.[^.]+$/, '')];
+              return uri ? `url("${uri}")` : 'url("")';
+            }
+          );
         gmText = rawHtml
           .replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n\n').replace(/<\/div>/gi, '\n')
           .replace(/<[^>]+>/g, '')
