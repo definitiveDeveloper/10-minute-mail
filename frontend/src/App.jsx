@@ -472,7 +472,7 @@ function AppContent() {
             <span className="gradient-text">{t("mainHeading2")}</span>{" "}
             {t("mainHeading3")}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mb-3 max-w-md sm:max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground mb-3 max-w-md sm:max-w-xl mx-auto">
             {t("subHeading")}
           </p>
 
@@ -523,9 +523,8 @@ function AppContent() {
                   onClick={extendEmailSession}
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.93 }}
-                  className="flex items-center gap-0.5 text-[10px] font-medium text-amber-500/80 hover:text-amber-400 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-semibold hover:bg-amber-600 active:scale-95 transition-colors cursor-pointer shadow-sm"
                 >
-                  <span className="text-border/50 mr-0.5">·</span>
                   <Clock className="h-2.5 w-2.5" />
                   <span>+10 min</span>
                 </motion.button>
@@ -612,7 +611,7 @@ function AppContent() {
           viewport={{ once: true }}
           variants={fadeIn}
         >
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
             {t("testimonialsHeading")}
           </h2>
           <p className="text-muted-foreground max-w-lg sm:max-w-2xl mx-auto text-sm sm:text-base">

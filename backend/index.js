@@ -220,14 +220,37 @@ app.get('/api/messages/:id', async (req, res) => {
       const m = await r.json();
 
       const rawHtml = m.mail_body || null;
+      const excerpt = m.mail_excerpt || '';
+
+      let gmHtml = null;
+      let gmText = '';
+
+      if (rawHtml) {
+        gmHtml = replaceEmbeddedSrcs(rawHtml, req.params.id);
+        gmText = rawHtml
+          .replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n\n').replace(/<\/div>/gi, '\n')
+          .replace(/<[^>]+>/g, '')
+          .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
+          .trim();
+      } else if (excerpt) {
+        // Guerrilla Mail HTML-encodes the excerpt — decode, then re-wrap as safe HTML for iframe
+        const decoded = excerpt
+          .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
+        gmText = decoded;
+        const safe = decoded.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        gmHtml = `<div style="white-space:pre-wrap;word-break:break-word">${safe}</div>`;
+      }
+
       return res.json({
         id:      String(m.mail_id),
         from:    m.mail_from || 'unknown',
         to:      session.email,
         subject: m.mail_subject || '(no subject)',
         date:    new Date(parseInt(m.mail_timestamp, 10) * 1000).toISOString(),
-        text:    rawHtml ? rawHtml.replace(/<[^>]*>/g, '') : '',
-        html:    rawHtml ? replaceEmbeddedSrcs(rawHtml, req.params.id) : null,
+        text:    gmText,
+        html:    gmHtml,
         cidMap:  {},
       });
     }

@@ -102,10 +102,13 @@ export default function EmailContentPreview({ email, isLoading }) {
     );
   }
 
-  const bodyText = typeof email.text === 'string' ? email.text : (email.text || []).join('\n');
+  const rawBodyText = typeof email.text === 'string' ? email.text : (email.text || []).join('\n');
+  const bodyText = rawBodyText
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
 
   return (
-    <div className="flex flex-col h-full min-h-0 overflow-y-auto">
+    <div className="flex flex-col h-full min-h-0">
       <div className="px-5 pt-5 pb-4 border-b border-border/60 flex-shrink-0">
         <h2 className="text-base font-semibold text-foreground mb-3 leading-snug">
           {email.subject}
@@ -117,7 +120,7 @@ export default function EmailContentPreview({ email, isLoading }) {
         </div>
       </div>
 
-      <div className="flex-1 p-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4">
         {srcDoc ? (
           <iframe
             ref={iframeRef}
