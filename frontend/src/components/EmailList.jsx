@@ -45,8 +45,8 @@ function formatTimeAgo(dateString, t) {
 export default function EmailList({ emails = [], onEmailSelect, selectedEmailId, currentPage, totalPages, onPageChange }) {
   const { t } = useI18n();
   return (
-    <div className="w-full flex flex-col flex-grow">
-      <div className="rounded-md border border-primary flex-grow overflow-y-auto bg-card">
+    <div className="w-full flex flex-col flex-1 min-h-0">
+      <div className="rounded-md border border-primary flex-1 min-h-0 overflow-y-auto bg-card">
         <Table>
           <TableHeader className="sticky top-0 z-10">
             <TableRow className="border-primary hover:bg-primary/90 bg-primary">

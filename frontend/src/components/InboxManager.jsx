@@ -140,7 +140,7 @@ export default function InboxManager({ currentEmail }) {
 
   if (!currentEmail) {
     return (
-      <div className="bg-muted/30 rounded-lg p-4 min-h-[200px] flex flex-col items-center justify-center text-muted-foreground">
+      <div className="bg-muted/30 rounded-lg p-4 h-[240px] flex flex-col items-center justify-center text-muted-foreground">
         <Inbox className="w-8 h-8 mb-2.5 text-primary/50" />
         <p className="text-sm font-semibold mb-1">{t('inboxInitializingTitle')}</p>
         <p className="text-[11px] text-center max-w-xs text-muted-foreground/70">{t('inboxInitializingDescription')}</p>
@@ -150,7 +150,7 @@ export default function InboxManager({ currentEmail }) {
 
   if (isLoading && emails.length === 0) {
     return (
-      <div className="bg-muted/30 rounded-lg p-4 min-h-[200px] flex flex-col items-center justify-center text-muted-foreground">
+      <div className="bg-muted/30 rounded-lg p-4 h-[240px] flex flex-col items-center justify-center text-muted-foreground">
         <Inbox className="w-8 h-8 mb-2.5 text-primary animate-pulse" />
         <p className="text-sm font-semibold mb-1">{t('inboxLoadingTitle')}</p>
         <p className="text-[11px] text-muted-foreground/70">{t('inboxLoadingDescription', { email: currentEmail })}</p>
@@ -169,7 +169,7 @@ export default function InboxManager({ currentEmail }) {
       : '';
 
     return (
-      <div className="bg-muted/30 rounded-lg p-4 min-h-[200px] flex flex-col items-center justify-center text-muted-foreground">
+      <div className="bg-muted/30 rounded-lg p-4 h-[240px] flex flex-col items-center justify-center text-muted-foreground">
         <Inbox className="w-8 h-8 mb-2.5 text-primary/50" />
         <p className="text-sm font-semibold mb-1">{t('inboxEmptyTitle')}</p>
         <p className="text-[11px] text-center max-w-xs text-muted-foreground/70">{descLine1}</p>
@@ -193,16 +193,16 @@ export default function InboxManager({ currentEmail }) {
   const showPreviewPane = selectedEmail && window.innerWidth >= 768;
 
   return (
-    <div className={`bg-muted/30 rounded-lg min-h-[260px] flex ${showPreviewPane ? 'flex-row' : 'flex-col'} relative overflow-hidden`}>
+    <div className={`bg-muted/30 rounded-lg h-[240px] flex ${showPreviewPane ? 'flex-row' : 'flex-col'} relative overflow-hidden`}>
       <motion.div
-        className="flex-1 overflow-hidden"
+        className="flex-1 overflow-hidden min-h-0"
         animate={{
           width: showPreviewPane ? `${100 - contentWidth}%` : '100%',
         }}
         style={{ display: !showPreviewPane && selectedEmail ? 'none' : 'flex', flexDirection: 'column' }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
-        <div className="p-2 sm:p-4 h-full flex flex-col">
+        <div className="p-2 sm:p-4 h-full flex flex-col min-h-0">
           {/* Toolbar */}
           <div className="flex items-center justify-between mb-2">
             {isLoading && emails.length > 0 ? (

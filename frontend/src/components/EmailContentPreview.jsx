@@ -23,10 +23,12 @@ function makeHead(bg, fg) {
   return [
     '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width,initial-scale=1">',
+    // Suppress referrer header so sender CDNs don't gate images by origin
+    '<meta name="referrer" content="no-referrer">',
     '<base target="_blank">',
     `<style id="__theme__">${themeCSS}</style>`,
     '<style>',
-    'img{max-width:100%!important;height:auto!important}',
+    'img{max-width:100%!important;height:auto!important;display:block}',
     'table{max-width:100%!important}',
     'td,th{word-break:break-word}',
     '*{box-sizing:border-box}',
@@ -122,15 +124,31 @@ export default function EmailContentPreview({ email, isLoading }) {
             key={email.id}
             srcDoc={srcDoc}
             sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="no-referrer"
             className="w-full border-0 rounded-lg bg-background"
             style={{ minHeight: 300 }}
             title="Email content"
             onLoad={e => {
+              const iframe = e.target;
+              const resize = () => {
+                try {
+                  const doc = iframe.contentDocument;
+                  if (doc?.documentElement) {
+                    iframe.style.height = doc.documentElement.scrollHeight + 'px';
+                  }
+                } catch (_) {}
+              };
+              resize();
+              // Re-measure once all images inside the email have loaded
               try {
-                const doc = e.target.contentDocument;
-                if (doc?.documentElement) {
-                  e.target.style.height = doc.documentElement.scrollHeight + 'px';
+                const imgs = Array.from(iframe.contentDocument?.images ?? []);
+                if (imgs.length > 0) {
+                  let pending = imgs.length;
+                  const done = () => { if (--pending === 0) resize(); };
+                  imgs.forEach(img => {
+                    if (img.complete) { done(); }
+                    else { img.addEventListener('load', done); img.addEventListener('error', done); }
+                  });
                 }
               } catch (_) {}
             }}

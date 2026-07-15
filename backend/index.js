@@ -120,12 +120,20 @@ function formatFrom(from) {
   return from.name ? `${from.name} <${from.address}>` : from.address;
 }
 
-// Replace cid: / attachment: src attrs with proxy URLs
+// Replace cid: / attachment: references in src attrs and CSS url() with proxy URLs.
 function replaceEmbeddedSrcs(html, msgId) {
-  return html.replace(
+  const proxy = (name) => `/api/messages/${msgId}/att/${encodeURIComponent(name.toLowerCase())}`;
+  // <img src="cid:name@host"> and src="attachment:name"
+  let out = html.replace(
     /src=(["']?)(?:cid:|attachment:)([^"'\s>@]*)(?:@[^"'\s>]*)?\1/gi,
-    (match, q, name) => `src="/api/messages/${msgId}/att/${encodeURIComponent(name.toLowerCase())}"`
+    (match, q, name) => `src="${proxy(name)}"`
   );
+  // CSS background-image: url("cid:name@host") / url(cid:name)
+  out = out.replace(
+    /url\((["']?)(?:cid:|attachment:)([^"'\s)@]*)(?:@[^"'\s)]*)?\1\)/gi,
+    (match, q, name) => `url("${proxy(name)}")`
+  );
+  return out;
 }
 
 // ── GET /api/email ────────────────────────────────────────────────────────────
