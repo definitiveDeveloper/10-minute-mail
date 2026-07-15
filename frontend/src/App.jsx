@@ -37,6 +37,33 @@ const fadeIn = {
 const EMAIL_LIFESPAN_MS = 10 * 60 * 1000;
 const EXTEND_THRESHOLD_MS = 2 * 60 * 1000;
 
+// Interpolates between RGB color stops: green → yellow → orange → red as time drains.
+function lerpRGB(a, b, t) {
+  return [
+    Math.round(a[0] + (b[0] - a[0]) * t),
+    Math.round(a[1] + (b[1] - a[1]) * t),
+    Math.round(a[2] + (b[2] - a[2]) * t),
+  ];
+}
+const COLOR_STOPS = [
+  { at: 1.00, rgb: [34, 197, 94]  },  // green-500
+  { at: 0.55, rgb: [234, 179, 8]  },  // yellow-500
+  { at: 0.25, rgb: [249, 115, 22] },  // orange-500
+  { at: 0.00, rgb: [239, 68, 68]  },  // red-500
+];
+function getTimerColor(timeLeft) {
+  const ratio = Math.min(1, Math.max(0, timeLeft / EMAIL_LIFESPAN_MS));
+  for (let i = 0; i < COLOR_STOPS.length - 1; i++) {
+    const hi = COLOR_STOPS[i], lo = COLOR_STOPS[i + 1];
+    if (ratio >= lo.at) {
+      const t = (ratio - lo.at) / (hi.at - lo.at);
+      const [r, g, b] = lerpRGB(lo.rgb, hi.rgb, t);
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+  return "rgb(239,68,68)";
+}
+
 const testimonials = [
   {
     name: "Wade Mercer",
@@ -473,19 +500,15 @@ function AppContent() {
             </Button>
           </div>
 
-          {/* ── IP lock badge — metadata below email address ── */}
-          <div className="mt-1.5 w-full max-w-xl sm:max-w-3xl mx-auto flex items-center gap-1.5 text-[10px] text-muted-foreground/45 select-none">
+          {/* ── IP lock badge — centered metadata below email address ── */}
+          <div className="mt-1.5 w-full max-w-xl sm:max-w-3xl mx-auto flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground/45 select-none">
             <span>🔒</span>
             <span>{t("ipLockedBadge")}</span>
             <span className="text-border/60">·</span>
             {assigningEmail ? (
               <Loader2 className="h-2.5 w-2.5 animate-spin text-primary" />
             ) : (
-              <span className={`tabular-nums font-medium ${
-                timeLeft <= 5000 ? "text-destructive"
-                : timeLeft <= EXTEND_THRESHOLD_MS ? "text-orange-500"
-                : ""
-              }`}>
+              <span className="tabular-nums font-medium" style={{ color: getTimerColor(timeLeft) }}>
                 {formatTime(timeLeft)}
               </span>
             )}
@@ -498,11 +521,9 @@ function AppContent() {
                 className="h-full rounded-full"
                 style={{
                   width: `${Math.min(100, (timeLeft / EMAIL_LIFESPAN_MS) * 100)}%`,
-                  background:
-                    timeLeft <= 5000 ? "#ef4444"
-                    : timeLeft <= EXTEND_THRESHOLD_MS ? "#f97316"
-                    : "hsl(var(--primary))",
-                  transition: "width 0.95s linear, background 0.4s ease",
+                  background: getTimerColor(timeLeft),
+                  boxShadow: `0 0 6px 1px ${getTimerColor(timeLeft)}90`,
+                  transition: "width 0.95s linear, background 0.5s ease, box-shadow 0.5s ease",
                 }}
                 animate={timeLeft <= 5000 ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
                 transition={timeLeft <= 5000 ? { duration: 0.55, repeat: Infinity } : { duration: 0.3 }}
