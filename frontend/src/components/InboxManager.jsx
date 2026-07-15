@@ -140,38 +140,38 @@ export default function InboxManager({ currentEmail }) {
 
   if (!currentEmail) {
     return (
-      <div className="bg-muted/30 rounded-lg p-6 min-h-[400px] flex flex-col items-center justify-center text-muted-foreground">
-        <Inbox className="w-16 h-16 mb-6 text-primary/50" />
-        <p className="text-xl font-medium mb-2">{t('inboxInitializingTitle')}</p>
-        <p className="text-base text-center max-w-sm">{t('inboxInitializingDescription')}</p>
+      <div className="bg-muted/30 rounded-lg p-4 min-h-[160px] flex flex-col items-center justify-center text-muted-foreground">
+        <Inbox className="w-8 h-8 mb-2.5 text-primary/50" />
+        <p className="text-sm font-semibold mb-1">{t('inboxInitializingTitle')}</p>
+        <p className="text-[11px] text-center max-w-xs text-muted-foreground/70">{t('inboxInitializingDescription')}</p>
       </div>
     );
   }
 
   if (isLoading && emails.length === 0) {
     return (
-      <div className="bg-muted/30 rounded-lg p-6 min-h-[400px] flex flex-col items-center justify-center text-muted-foreground">
-        <Inbox className="w-16 h-16 mb-6 text-primary animate-pulse" />
-        <p className="text-xl font-medium mb-2">{t('inboxLoadingTitle')}</p>
-        <p className="text-base">{t('inboxLoadingDescription', { email: currentEmail })}</p>
+      <div className="bg-muted/30 rounded-lg p-4 min-h-[160px] flex flex-col items-center justify-center text-muted-foreground">
+        <Inbox className="w-8 h-8 mb-2.5 text-primary animate-pulse" />
+        <p className="text-sm font-semibold mb-1">{t('inboxLoadingTitle')}</p>
+        <p className="text-[11px] text-muted-foreground/70">{t('inboxLoadingDescription', { email: currentEmail })}</p>
       </div>
     );
   }
 
   if (emails.length === 0 && !isLoading) {
     return (
-      <div className="bg-muted/30 rounded-lg p-6 min-h-[400px] flex flex-col items-center justify-center text-muted-foreground">
-        <Inbox className="w-16 h-16 mb-6 text-primary/50" />
-        <p className="text-xl font-medium mb-2">{t('inboxEmptyTitle')}</p>
-        <p className="text-base text-center max-w-sm">{t('inboxEmptyDescription', { email: currentEmail })}</p>
+      <div className="bg-muted/30 rounded-lg p-4 min-h-[160px] flex flex-col items-center justify-center text-muted-foreground">
+        <Inbox className="w-8 h-8 mb-2.5 text-primary/50" />
+        <p className="text-sm font-semibold mb-1">{t('inboxEmptyTitle')}</p>
+        <p className="text-[11px] text-center max-w-xs text-muted-foreground/70">{t('inboxEmptyDescription', { email: currentEmail })}</p>
         <Button
           onClick={handleRefresh}
           disabled={refreshCooldown}
           variant="outline"
           size="sm"
-          className="mt-6 gap-2"
+          className="mt-4 gap-2 h-7 text-xs"
         >
-          <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           {refreshCooldown ? `${cooldownLeft}s` : t('inboxRefresh')}
         </Button>
       </div>
@@ -181,7 +181,7 @@ export default function InboxManager({ currentEmail }) {
   const showPreviewPane = selectedEmail && window.innerWidth >= 768;
 
   return (
-    <div className={`bg-muted/30 rounded-lg min-h-[400px] flex ${showPreviewPane ? 'flex-row' : 'flex-col'} relative overflow-hidden`}>
+    <div className={`bg-muted/30 rounded-lg min-h-[220px] flex ${showPreviewPane ? 'flex-row' : 'flex-col'} relative overflow-hidden`}>
       <motion.div
         className="flex-1 overflow-hidden"
         animate={{
