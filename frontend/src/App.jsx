@@ -406,14 +406,14 @@ function AppContent() {
 
         {/* Hero */}
         <motion.div
-          className="container mx-auto px-4 sm:px-6 py-12 md:py-20 text-center"
+          className="container mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-4 text-center"
           initial="initial"
           animate="animate"
           variants={fadeIn}
         >
           <motion.button
             onClick={() => window.open(BMC_URL, "_blank")}
-            className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-amber-500/40 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/[0.06] text-[11px] sm:text-xs text-foreground/65 dark:text-muted-foreground/70 tracking-wide hover:border-amber-500/70 dark:hover:border-amber-400/40 hover:text-foreground/90 dark:hover:text-muted-foreground transition-all duration-500 group"
+            className="inline-flex items-center gap-2 mb-3 px-4 py-1.5 rounded-full border border-amber-500/40 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/[0.06] text-[11px] sm:text-xs text-foreground/65 dark:text-muted-foreground/70 tracking-wide hover:border-amber-500/70 dark:hover:border-amber-400/40 hover:text-foreground/90 dark:hover:text-muted-foreground transition-all duration-500 group"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.7 }}
@@ -440,12 +440,12 @@ function AppContent() {
             </motion.span>
           </motion.button>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
             {t("mainHeading1")}{" "}
             <span className="gradient-text">{t("mainHeading2")}</span>{" "}
             {t("mainHeading3")}
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-md sm:max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground mb-3 max-w-md sm:max-w-xl mx-auto">
             {t("subHeading")}
           </p>
 
@@ -474,14 +474,14 @@ function AppContent() {
           </div>
 
           {/* IP-locked badge */}
-          <div className="mt-3 flex items-center justify-center">
+          <div className="mt-1.5 flex items-center justify-center">
             <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/30 border border-border rounded-full px-3 py-1">
               <span>🔒</span> {t("ipLockedBadge")}
             </span>
           </div>
 
           {/* ── Circular countdown ring ── */}
-          <div className="mt-6 flex flex-col items-center gap-3">
+          <div className="mt-2 flex flex-col items-center gap-2">
             <div className="relative" style={{ width: 76, height: 76 }}>
               <svg
                 width={76}
@@ -591,12 +591,12 @@ function AppContent() {
             </AnimatePresence>
           </div>
 
-          <CoffeeWhisper />
-
           {/* Inbox */}
-          <div className="mt-4">
+          <div className="mt-2">
             <InboxManager currentEmail={currentEmail} />
           </div>
+
+          <CoffeeWhisper />
         </motion.div>
       </div>
 
