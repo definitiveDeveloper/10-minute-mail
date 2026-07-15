@@ -13,14 +13,15 @@ export default function ThemeToggle() {
     <Button
       variant="outline"
       size="icon"
+      className="h-7 w-7"
       onClick={toggleTheme}
       aria-label={theme === 'light' ? t('switchToDarkTheme') : t('switchToLightTheme')}
       title={theme === 'light' ? t('switchToDarkTheme') : t('switchToLightTheme')}
     >
       {theme === 'light' ? (
-        <Moon className="h-[1.2rem] w-[1.2rem]" />
+        <Moon className="h-3.5 w-3.5" />
       ) : (
-        <Sun className="h-[1.2rem] w-[1.2rem]" />
+        <Sun className="h-3.5 w-3.5" />
       )}
     </Button>
   );

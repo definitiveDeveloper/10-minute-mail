@@ -352,14 +352,14 @@ function AppContent() {
       {/* ── Hero / Gradient Section ── */}
       <div className="hero-gradient">
         {/* Navbar */}
-        <nav className="container mx-auto px-4 sm:px-6 py-6 flex flex-wrap items-center justify-between gap-y-4">
+        <nav className="container mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-y-3">
           <Logo />
-          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end sm:justify-start">
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end sm:justify-start">
             <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Globe className="h-4 w-4" />
+                <Button variant="outline" size="sm" className="h-7 text-[10px] px-2 gap-1">
+                  <Globe className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">
                     {activeLangNames[currentLanguage] ||
                       USER_LANGUAGES.find((l) => l.code === currentLanguage)?.nativeName ||
@@ -385,7 +385,7 @@ function AppContent() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <p className="text-xs sm:text-sm text-muted-foreground font-medium hidden md:block">
+            <p className="text-[10px] text-muted-foreground/60 hidden md:block">
               {t("poweredByPassion")}
             </p>
             <CoffeeButton
@@ -473,38 +473,40 @@ function AppContent() {
             </Button>
           </div>
 
-          {/* ── IP lock + drain timer (single compact row) ── */}
-          <div className="mt-2 w-full max-w-xl sm:max-w-3xl mx-auto">
-            <div className="flex items-center gap-2.5">
-              <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/50 shrink-0 select-none">
-                🔒 <span className="hidden sm:inline">{t("ipLockedBadge")}</span>
+          {/* ── IP lock badge — metadata below email address ── */}
+          <div className="mt-1.5 w-full max-w-xl sm:max-w-3xl mx-auto flex items-center gap-1.5 text-[10px] text-muted-foreground/45 select-none">
+            <span>🔒</span>
+            <span>{t("ipLockedBadge")}</span>
+            <span className="text-border/60">·</span>
+            {assigningEmail ? (
+              <Loader2 className="h-2.5 w-2.5 animate-spin text-primary" />
+            ) : (
+              <span className={`tabular-nums font-medium ${
+                timeLeft <= 5000 ? "text-destructive"
+                : timeLeft <= EXTEND_THRESHOLD_MS ? "text-orange-500"
+                : ""
+              }`}>
+                {formatTime(timeLeft)}
               </span>
-              <div className="flex-1 h-[2px] bg-border/30 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${Math.min(100, (timeLeft / EMAIL_LIFESPAN_MS) * 100)}%`,
-                    background:
-                      timeLeft <= 5000 ? "#ef4444"
-                      : timeLeft <= EXTEND_THRESHOLD_MS ? "#f97316"
-                      : "hsl(var(--primary))",
-                    transition: "width 0.95s linear, background 0.4s ease",
-                  }}
-                  animate={timeLeft <= 5000 ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
-                  transition={timeLeft <= 5000 ? { duration: 0.55, repeat: Infinity } : { duration: 0.3 }}
-                />
-              </div>
-              {assigningEmail ? (
-                <Loader2 className="h-3 w-3 animate-spin text-primary shrink-0" />
-              ) : (
-                <span className={`text-[10px] tabular-nums font-medium shrink-0 ${
-                  timeLeft <= 5000 ? "text-destructive"
-                  : timeLeft <= EXTEND_THRESHOLD_MS ? "text-orange-500"
-                  : "text-muted-foreground/50"
-                }`}>
-                  {formatTime(timeLeft)}
-                </span>
-              )}
+            )}
+          </div>
+
+          {/* ── Drain bar — full-width, standalone ── */}
+          <div className="mt-1 w-full max-w-xl sm:max-w-3xl mx-auto">
+            <div className="h-[3px] bg-border/30 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{
+                  width: `${Math.min(100, (timeLeft / EMAIL_LIFESPAN_MS) * 100)}%`,
+                  background:
+                    timeLeft <= 5000 ? "#ef4444"
+                    : timeLeft <= EXTEND_THRESHOLD_MS ? "#f97316"
+                    : "hsl(var(--primary))",
+                  transition: "width 0.95s linear, background 0.4s ease",
+                }}
+                animate={timeLeft <= 5000 ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
+                transition={timeLeft <= 5000 ? { duration: 0.55, repeat: Infinity } : { duration: 0.3 }}
+              />
             </div>
 
             <AnimatePresence>
