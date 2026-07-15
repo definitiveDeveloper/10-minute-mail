@@ -105,7 +105,7 @@ export default function EmailContentPreview({ email, isLoading }) {
   const bodyText = typeof email.text === 'string' ? email.text : (email.text || []).join('\n');
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
+    <div className="flex flex-col h-full min-h-0 overflow-y-auto">
       <div className="px-5 pt-5 pb-4 border-b border-border/60 flex-shrink-0">
         <h2 className="text-base font-semibold text-foreground mb-3 leading-snug">
           {email.subject}

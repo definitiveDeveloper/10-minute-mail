@@ -242,7 +242,7 @@ export default function InboxManager({ currentEmail }) {
             exit={{ width: showPreviewPane ? 0 : '100%', opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
-            <div className="relative h-full">
+            <div className="relative h-full min-h-0 overflow-hidden">
               {showPreviewPane && (
                 <div
                   className={`absolute left-0 top-0 w-1.5 h-full cursor-col-resize bg-transparent hover:bg-primary/20 transition-colors z-30 ${isResizing ? 'bg-primary/20' : ''}`}

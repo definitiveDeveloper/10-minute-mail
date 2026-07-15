@@ -500,7 +500,7 @@ function AppContent() {
             </Button>
           </div>
 
-          {/* ── IP lock badge — centered metadata below email address ── */}
+          {/* ── IP lock badge + timer + inline extend ── */}
           <div className="mt-1.5 w-full max-w-xl sm:max-w-3xl mx-auto flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground/45 select-none">
             <span>🔒</span>
             <span>{t("ipLockedBadge")}</span>
@@ -512,6 +512,25 @@ function AppContent() {
                 {formatTime(timeLeft)}
               </span>
             )}
+            <AnimatePresence>
+              {showExtendButton && (
+                <motion.button
+                  key="extend"
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -6 }}
+                  transition={{ duration: 0.25 }}
+                  onClick={extendEmailSession}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.93 }}
+                  className="flex items-center gap-0.5 text-[10px] font-medium text-amber-500/80 hover:text-amber-400 transition-colors cursor-pointer"
+                >
+                  <span className="text-border/50 mr-0.5">·</span>
+                  <Clock className="h-2.5 w-2.5" />
+                  <span>+10 min</span>
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* ── Drain bar — full-width, standalone ── */}
@@ -531,29 +550,17 @@ function AppContent() {
             </div>
 
             <AnimatePresence>
-              {(showExtendButton || (assigningEmail && assigningCountdown > 0)) && (
+              {assigningEmail && assigningCountdown > 0 && (
                 <motion.div
-                  className="flex items-center justify-center gap-2 mt-1.5"
+                  className="flex items-center justify-center mt-1"
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {assigningEmail && assigningCountdown > 0 && (
-                    <span className="text-[10px] text-muted-foreground/60">
-                      {t("assigningIn", { count: assigningCountdown })}
-                    </span>
-                  )}
-                  {showExtendButton && (
-                    <Button
-                      onClick={extendEmailSession}
-                      size="sm"
-                      className="h-6 text-[10px] bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm rounded-full gap-1 px-3 whitespace-nowrap"
-                    >
-                      <Clock className="h-3 w-3" />
-                      {t("extendSessionButton10MoreMinutes")}
-                    </Button>
-                  )}
+                  <span className="text-[10px] text-muted-foreground/60">
+                    {t("assigningIn", { count: assigningCountdown })}
+                  </span>
                 </motion.div>
               )}
             </AnimatePresence>
