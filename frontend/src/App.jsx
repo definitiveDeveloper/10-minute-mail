@@ -413,7 +413,7 @@ function AppContent() {
         >
           <motion.button
             onClick={() => window.open(BMC_URL, "_blank")}
-            className="inline-flex items-center gap-2 mb-3 px-4 py-1.5 rounded-full border border-amber-500/40 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/[0.06] text-[11px] sm:text-xs text-foreground/65 dark:text-muted-foreground/70 tracking-wide hover:border-amber-500/70 dark:hover:border-amber-400/40 hover:text-foreground/90 dark:hover:text-muted-foreground transition-all duration-500 group"
+            className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full border border-amber-500/40 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/[0.06] text-[9px] sm:text-[10px] text-foreground/65 dark:text-muted-foreground/70 tracking-wide hover:border-amber-500/70 dark:hover:border-amber-400/40 hover:text-foreground/90 dark:hover:text-muted-foreground transition-all duration-500 group"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.7 }}
@@ -445,7 +445,7 @@ function AppContent() {
             <span className="gradient-text">{t("mainHeading2")}</span>{" "}
             {t("mainHeading3")}
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mb-3 max-w-md sm:max-w-xl mx-auto">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-3 max-w-md sm:max-w-xl mx-auto">
             {t("subHeading")}
           </p>
 
@@ -475,7 +475,7 @@ function AppContent() {
 
           {/* IP-locked badge */}
           <div className="mt-1.5 flex items-center justify-center">
-            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/30 border border-border rounded-full px-3 py-1">
+            <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/30 border border-border rounded-full px-2.5 py-0.5">
               <span>🔒</span> {t("ipLockedBadge")}
             </span>
           </div>
