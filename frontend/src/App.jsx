@@ -60,17 +60,19 @@ const testimonials = [
 
 const BMC_URL = "https://www.buymeacoffee.com/MeansMuch";
 
-// A coffee cup emoji that quietly bobs — used inside every BMC touch-point.
-function SteamCup({ className = "" }) {
+// Official BMC coffee-cup logo that quietly bobs — used inside every BMC touch-point.
+function BMCIcon({ size = 16, className = "", delay = 0 }) {
   return (
-    <motion.span
+    <motion.img
+      src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg"
+      alt=""
       aria-hidden
-      className={`inline-block select-none ${className}`}
+      width={size}
+      height={size}
+      className={`inline-block select-none flex-shrink-0 ${className}`}
       animate={{ y: [0, -3, 0] }}
-      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-    >
-      ☕
-    </motion.span>
+      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut", delay }}
+    />
   );
 }
 
@@ -139,7 +141,7 @@ function CoffeeWhisper() {
             <span className="tracking-wide">servers online</span>
             <span className="text-border/60">·</span>
             <span className="group-hover:text-amber-500 transition-colors duration-300 flex items-center gap-1">
-              kept free by <SteamCup />
+              kept free by <BMCIcon size={13} />
             </span>
           </motion.button>
           <div className="h-px flex-1 bg-border/40 max-w-[100px]" />
@@ -162,9 +164,9 @@ function CoffeeDivider() {
         animate={{ color: ["rgba(80,65,50,0.65)", "rgba(180,120,0,0.95)", "rgba(80,65,50,0.65)"] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <SteamCup />
+        <BMCIcon size={13} />
         <span>kept free by community</span>
-        <SteamCup />
+        <BMCIcon size={13} delay={0.4} />
       </motion.button>
       <div className="h-px flex-1 bg-border/25" />
     </div>
@@ -186,7 +188,7 @@ function CreatorCard() {
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent pointer-events-none" />
         <div className="flex items-center gap-1 mb-4">
           {[0, 1, 2, 3, 4].map((i) => (
-            <SteamCup key={i} className="text-amber-400 text-sm" />
+            <BMCIcon key={i} size={16} delay={i * 0.18} />
           ))}
         </div>
         <p className="mb-5 text-sm text-muted-foreground/80 leading-relaxed italic">
@@ -215,7 +217,7 @@ function CreatorCard() {
             onClick={() => window.open(BMC_URL, "_blank")}
             className="flex items-center gap-1.5 bg-[#FFDD00] text-black px-3 py-1.5 rounded-full text-[11px] font-medium shadow-sm flex-shrink-0"
           >
-            <SteamCup className="text-[13px]" />
+            <BMCIcon size={14} />
             <span style={{ fontFamily: "'Pacifico', cursive", fontWeight: 400 }}>
               Buy a coffee
             </span>
@@ -391,7 +393,7 @@ function AppContent() {
               title={t("buyMeACoffeeTooltip")}
               className="flex items-center gap-2 bg-[#FFDD00] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow text-xs sm:text-sm"
             >
-              <SteamCup className="text-sm sm:text-base leading-none" />
+              <BMCIcon size={18} />
               <span
                 style={{ fontFamily: "'Pacifico', cursive", fontWeight: 400 }}
                 className="hidden sm:inline"
