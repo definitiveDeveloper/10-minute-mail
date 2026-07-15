@@ -57,95 +57,116 @@ const testimonials = [
   },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Google AdSense Configuration
-// ─────────────────────────────────────────────────────────────────────────────
-// SETUP INSTRUCTIONS:
-//   1. Sign up at https://adsense.google.com and get your site approved.
-//   2. Replace ADSENSE_PUBLISHER_ID below with your ca-pub-XXXXXXXXXXXXXXXX id.
-//   3. Create ad units in your AdSense dashboard; replace slot IDs below.
-//   4. Uncomment the <script> tag in frontend/index.html (search "AdSense Script").
-//
-const ADSENSE_PUBLISHER_ID = "ca-pub-9597248637465797";
-// Square display ad  — 10-minute-mail-online-square  (slot 6591819888)
-// Used in the main hero area and before the FAQ section.
-const AD_SLOT_SQUARE  = "6591819888";
-// Infeed / native ad — 10-minute-mail-online-infeed  (slot 2349322549)
-// Used between content sections.
-const AD_SLOT_INFEED  = "2349322549";
+const BMC_URL = "https://www.buymeacoffee.com/MeansMuch";
 
-function GoogleAd({ slot, format = "auto", layoutKey, style = {}, className = "" }) {
-  const ref = useRef(null);
+// ── Placement 1: After inbox ──────────────────────────────────────────────────
+// Appears 2 s after mount so it feels ambient, not immediate.
+// Reads like a status indicator, not a donation ask.
+function CoffeeWhisper() {
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
-    if (!ref.current) return;
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (_) {}
+    const t = setTimeout(() => setVisible(true), 2000);
+    return () => clearTimeout(t);
   }, []);
   return (
-    <ins
-      ref={ref}
-      className={`adsbygoogle ${className}`}
-      style={{ display: "block", ...style }}
-      data-ad-client={ADSENSE_PUBLISHER_ID}
-      data-ad-slot={slot}
-      data-ad-format={format}
-      {...(layoutKey ? { "data-ad-layout-key": layoutKey } : { "data-full-width-responsive": "true" })}
-    />
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className="my-8 flex items-center justify-center gap-3 px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.4 }}
+        >
+          <div className="h-px flex-1 bg-border/40 max-w-[100px]" />
+          <button
+            onClick={() => window.open(BMC_URL, "_blank")}
+            className="flex items-center gap-2 text-[11px] text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors duration-500 group"
+          >
+            <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
+            </span>
+            <span className="tracking-wide">servers online</span>
+            <span className="text-border/60">·</span>
+            <span className="group-hover:text-amber-500 transition-colors duration-300">
+              kept free by ☕
+            </span>
+          </button>
+          <div className="h-px flex-1 bg-border/40 max-w-[100px]" />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
-// Square display ad after the inbox (10-minute-mail-online-square)
-function AdPlaceholder() {
+// ── Placement 2: Between sections ────────────────────────────────────────────
+// Looks like a typographic section break. The ☕ expands on hover.
+function CoffeeDivider() {
   return (
-    <div className="my-8 w-full">
-      <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 text-center mb-1 select-none">
-        Advertisement
-      </p>
-      <div className="flex justify-center min-h-[100px] bg-muted/10 rounded-lg border border-dashed border-muted-foreground/20">
-        <GoogleAd
-          slot={AD_SLOT_SQUARE}
-          format="auto"
-          style={{ minWidth: 300, maxWidth: 728, width: "100%" }}
-        />
-      </div>
+    <div className="py-8 flex items-center justify-center gap-4 px-6">
+      <div className="h-px flex-1 bg-border/25" />
+      <button
+        onClick={() => window.open(BMC_URL, "_blank")}
+        className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/30 hover:text-muted-foreground/70 transition-all duration-500 group select-none"
+      >
+        <span className="transition-transform duration-500 group-hover:scale-125 group-hover:rotate-[-8deg]">
+          ☕
+        </span>
+        <span>kept free by community</span>
+        <span className="transition-transform duration-500 group-hover:scale-125 group-hover:rotate-[8deg]">
+          ☕
+        </span>
+      </button>
+      <div className="h-px flex-1 bg-border/25" />
     </div>
   );
 }
 
-// AdBanner — infeed between sections, square display before FAQ
-function AdBanner({ variant = "leaderboard" }) {
-  if (variant === "rectangle") {
-    // Square display ad (10-minute-mail-online-square)
-    return (
-      <div className="flex flex-col items-center py-2 px-4 gap-1">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 select-none">
-          Advertisement
-        </p>
-        <div className="min-h-[250px] min-w-[300px] bg-muted/10 rounded-xl border border-dashed border-muted-foreground/20 flex items-center justify-center">
-          <GoogleAd
-            slot={AD_SLOT_SQUARE}
-            format="auto"
-            style={{ minWidth: 300, maxWidth: 336, width: "100%" }}
-          />
-        </div>
-      </div>
-    );
-  }
-  // Infeed / native ad between content sections (10-minute-mail-online-infeed)
+// ── Placement 3: After testimonials ──────────────────────────────────────────
+// Looks like a 4th testimonial card — creator speaking directly.
+// Same card-gradient + border as surrounding testimonials so it blends naturally.
+function CreatorCard() {
   return (
-    <div className="flex flex-col items-center px-4 gap-1">
-      <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 select-none">
-        Advertisement
-      </p>
-      <div className="w-full min-h-[90px] bg-muted/10 rounded-xl border border-dashed border-muted-foreground/20 flex items-center justify-center">
-        <GoogleAd
-          slot={AD_SLOT_INFEED}
-          format="fluid"
-          layoutKey="-ef+6k-30-ac+ty"
-          style={{ width: "100%", maxWidth: 728 }}
-        />
-      </div>
+    <div className="pb-6 px-4 flex justify-center">
+      <motion.div
+        className="max-w-sm w-full card-gradient p-6 rounded-lg border border-border/50 relative overflow-hidden"
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent pointer-events-none" />
+        <div className="flex items-center gap-1 mb-4">
+          {["☕", "☕", "☕", "☕", "☕"].map((c, i) => (
+            <span key={i} className="text-amber-400 text-sm">{c}</span>
+          ))}
+        </div>
+        <p className="mb-5 text-sm text-muted-foreground/80 leading-relaxed italic">
+          "I built this nights and weekends so everyone could have a spam-free
+          inbox. If it saved you from even a handful of junk emails, a coffee
+          keeps the lights on."
+        </p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
+              A
+            </div>
+            <div>
+              <p className="font-semibold text-sm">AvaRoberts</p>
+              <p className="text-xs text-muted-foreground">Creator, 10 Minute Mail</p>
+            </div>
+          </div>
+          <button
+            onClick={() => window.open(BMC_URL, "_blank")}
+            className="flex items-center gap-1.5 bg-[#FFDD00] text-black px-3 py-1.5 rounded-full text-[11px] font-medium hover:brightness-105 active:scale-95 transition-all duration-200 shadow-sm flex-shrink-0"
+          >
+            <span>☕</span>
+            <span style={{ fontFamily: "'Pacifico', cursive", fontWeight: 400 }}>
+              Buy a coffee
+            </span>
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -439,8 +460,7 @@ function AppContent() {
             )}
           </AnimatePresence>
 
-          {/* ── Ad Slot (Main) ── */}
-          <AdPlaceholder />
+          <CoffeeWhisper />
 
           {/* Inbox */}
           <div className="mt-4">
@@ -458,10 +478,7 @@ function AppContent() {
       {/* ── How It Works ── */}
       <HowItWorks />
 
-      {/* ── Ad Slot (Secondary Banner) ── */}
-      <div className="py-6">
-        <AdBanner variant="leaderboard" />
-      </div>
+      <CoffeeDivider />
 
       {/* ── Divider ── */}
       <div className="section-divider" />
@@ -546,10 +563,7 @@ function AppContent() {
         </div>
       </section>
 
-      {/* ── Ad Slot (Tertiary Banner) ── */}
-      <div className="pb-6">
-        <AdBanner variant="rectangle" />
-      </div>
+      <CreatorCard />
 
       {/* ── Divider ── */}
       <div className="section-divider" />
