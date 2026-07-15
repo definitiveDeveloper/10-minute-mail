@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Globe, Clock, RotateCcw, Annoyed, Loader2 } from "lucide-react";
+import { Star, Globe, Clock, RotateCcw, Loader2 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EmailDisplay from "@/components/EmailDisplay";
@@ -56,55 +56,75 @@ const testimonials = [
   },
 ];
 
-function AdPlaceholder() {
-  const { t } = useI18n();
+// ─────────────────────────────────────────────────────────────────────────────
+// Google AdSense Configuration
+// ─────────────────────────────────────────────────────────────────────────────
+// SETUP INSTRUCTIONS:
+//   1. Sign up at https://adsense.google.com and get your site approved.
+//   2. Replace ADSENSE_PUBLISHER_ID below with your ca-pub-XXXXXXXXXXXXXXXX id.
+//   3. Create ad units in your AdSense dashboard; replace slot IDs below.
+//   4. Uncomment the <script> tag in frontend/index.html (search "AdSense Script").
+//
+const ADSENSE_PUBLISHER_ID = "ca-pub-XXXXXXXXXXXXXXXX"; // ← replace with your Publisher ID
+const AD_SLOT_MAIN        = "1234567890"; // ← 300×250 or Responsive — after inbox
+const AD_SLOT_LEADERBOARD = "0987654321"; // ← Leaderboard 728×90 / Banner 320×50
+const AD_SLOT_RECTANGLE   = "1122334455"; // ← Rectangle 336×280 / 300×250
+
+function GoogleAd({ slot, format = "auto", style = {}, className = "" }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (_) {}
+  }, []);
   return (
-    <div className="my-8 py-6 bg-muted/20 border-2 border-dashed border-muted-foreground/30 rounded-lg flex flex-col items-center justify-center text-muted-foreground">
-      <Annoyed className="w-12 h-12 mb-3 text-muted-foreground/50" />
-      <p className="font-semibold">{t("adPlaceholderTitle") || "Advertisement Area"}</p>
-      <p className="text-sm text-center px-4">
-        {t("adPlaceholderDescription") || "This space is reserved for an ad."}
-      </p>
+    <ins
+      ref={ref}
+      className={`adsbygoogle ${className}`}
+      style={{ display: "block", ...style }}
+      data-ad-client={ADSENSE_PUBLISHER_ID}
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive="true"
+    />
+  );
+}
+
+// Main ad — responsive block shown after the inbox in the hero
+function AdPlaceholder() {
+  return (
+    <div className="my-6 flex justify-center">
+      <GoogleAd
+        slot={AD_SLOT_MAIN}
+        format="auto"
+        style={{ minWidth: 300, maxWidth: 728, width: "100%" }}
+      />
     </div>
   );
 }
 
+// Banner ad — leaderboard on desktop, banner on mobile
 function AdBanner({ variant = "leaderboard" }) {
   if (variant === "rectangle") {
     return (
       <div className="flex justify-center py-2 px-4">
-        {/* Large Rectangle 336×280 on desktop, Medium Rectangle 300×250 on mobile */}
-        <div className="w-[300px] h-[250px] sm:w-[336px] sm:h-[280px] bg-muted/10 border-2 border-dashed border-muted-foreground/20 rounded-xl flex flex-col items-center justify-center gap-2 text-muted-foreground select-none">
-          <div className="w-10 h-10 rounded-full bg-muted/30 flex items-center justify-center mb-1">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-30">
-              <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
-              <path d="M3 9h18M9 21V9" stroke="currentColor" strokeWidth="2"/>
-            </svg>
-          </div>
-          <span className="text-xs font-semibold uppercase tracking-widest opacity-40">
-            Advertisement
-          </span>
-          <span className="text-[10px] opacity-25 font-mono">
-            336×280
-          </span>
-        </div>
+        <GoogleAd
+          slot={AD_SLOT_RECTANGLE}
+          format="auto"
+          style={{ minWidth: 300, maxWidth: 336, width: "100%" }}
+        />
       </div>
     );
   }
-
+  // leaderboard
   return (
     <div className="flex justify-center px-4">
-      {/* Leaderboard 728×90 on desktop */}
-      <div className="hidden sm:flex w-full max-w-[728px] h-[90px] bg-muted/10 border-2 border-dashed border-muted-foreground/20 rounded-xl items-center justify-center gap-6 text-muted-foreground select-none">
-        <span className="text-xs font-semibold uppercase tracking-widest opacity-40">Advertisement</span>
-        <div className="flex-1 max-w-[200px] h-px bg-muted-foreground/10" />
-        <span className="text-[10px] opacity-25 font-mono">728×90</span>
-      </div>
-      {/* Mobile Banner 320×50 */}
-      <div className="flex sm:hidden w-full max-w-[320px] h-[50px] bg-muted/10 border-2 border-dashed border-muted-foreground/20 rounded-xl items-center justify-center gap-3 text-muted-foreground select-none">
-        <span className="text-[10px] font-semibold uppercase tracking-widest opacity-40">Ad</span>
-        <span className="text-[10px] opacity-25 font-mono">320×50</span>
-      </div>
+      <GoogleAd
+        slot={AD_SLOT_LEADERBOARD}
+        format="auto"
+        style={{ width: "100%", maxWidth: 728 }}
+      />
     </div>
   );
 }
@@ -243,7 +263,7 @@ function AppContent() {
                   <Globe className="h-4 w-4" />
                   <span className="hidden sm:inline">
                     {USER_LANGUAGES.find((lang) => lang.code === currentLanguage)
-                      ?.name || "Language"}
+                      ?.nativeName || "Language"}
                   </span>
                   <span className="sm:hidden">{currentLanguage.toUpperCase()}</span>
                 </Button>
@@ -256,8 +276,10 @@ function AppContent() {
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => setLanguage(lang.code)}
+                    className={lang.code === currentLanguage ? "bg-accent font-semibold" : ""}
                   >
-                    {lang.name}
+                    <span className="mr-2 text-muted-foreground text-xs w-8 shrink-0">{lang.code.toUpperCase()}</span>
+                    {lang.nativeName}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

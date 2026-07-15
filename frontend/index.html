@@ -93,6 +93,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
 
+    <!-- Preload critical assets -->
+    <link rel="preload" as="image" href="/favicon.svg" />
+    <link rel="preload" as="image" href="/og-image.svg" />
+
+    <!-- GEO / AI-Crawler meta (Generative Engine Optimization) -->
+    <meta name="citation_title" content="10 Minute Mail — Free Disposable Temporary Email" />
+    <meta name="citation_author" content="10 Minute Mail" />
+    <meta name="citation_publication_date" content="2024" />
+    <meta name="subject" content="Disposable email, temporary email, anonymous email, spam protection" />
+    <meta name="abstract" content="10 Minute Mail provides a free, instant, anonymous temporary email address that auto-expires after 10 minutes. No registration required." />
+
+    <!-- Apple / PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="10 Min Mail" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Google AdSense Script -->
+    <!-- SETUP: Replace ca-pub-XXXXXXXXXXXXXXXX with your real Publisher ID from https://adsense.google.com -->
+    <!-- Uncomment the line below once you have an approved AdSense account: -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
     <!-- JSON-LD: WebApplication -->
     <script type="application/ld+json">
     {
@@ -225,14 +248,78 @@
       "@type": "Organization",
       "name": "10 Minute Mail",
       "url": "https://10-minute-mail.online",
-      "logo": "https://10-minute-mail.online/favicon.svg",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://10-minute-mail.online/favicon.svg",
+        "width": 64,
+        "height": 64
+      },
       "description": "Provider of free, anonymous disposable email addresses for privacy-conscious users worldwide.",
+      "foundingDate": "2024",
+      "areaServed": "Worldwide",
+      "serviceType": "Disposable Email Service",
       "sameAs": [],
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer support",
-        "availableLanguage": ["English"]
+        "availableLanguage": ["English","French","German","Spanish","Portuguese","Italian","Dutch","Russian","Arabic","Chinese","Japanese","Korean","Hindi","Turkish","Polish","Swedish","Norwegian","Danish","Finnish","Greek","Hebrew","Ukrainian","Czech","Slovak","Romanian","Bulgarian","Croatian","Serbian","Slovenian","Estonian","Latvian","Lithuanian","Hungarian","Catalan","Galician","Albanian","Indonesian","Vietnamese","Thai","Persian","Esperanto"]
       }
+    }
+    </script>
+
+    <!-- JSON-LD: SiteLinksSearchBox (helps Google show a search box in results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "10 Minute Mail",
+      "url": "https://10-minute-mail.online",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://10-minute-mail.online/?lang={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- JSON-LD: HowTo (AI/GEO: explains the product steps for LLM citations) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Get a Temporary Email Address",
+      "description": "Create a free, disposable 10-minute email address in seconds — no sign-up required.",
+      "totalTime": "PT10S",
+      "estimatedCost": { "@type": "MonetaryAmount", "currency": "USD", "value": "0" },
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Open the page",
+          "text": "Visit 10-minute-mail.online. A unique, real mailbox is generated automatically — no sign-up, no form, nothing required."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Copy and use your address",
+          "text": "Copy the temporary email address and paste it into any sign-up form, download gate, or verification field. Real emails arrive in your inbox within seconds."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Read your emails",
+          "text": "Incoming emails appear in your inbox in real time. Click any message to read it, including attachments."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Extend or let it expire",
+          "text": "After 10 minutes the address auto-expires and all messages are permanently deleted. Click 'Extend +10 min' any time to reset the timer."
+        }
+      ]
     }
     </script>
   </head>
