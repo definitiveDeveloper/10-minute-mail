@@ -413,7 +413,7 @@ function AppContent() {
         >
           <motion.button
             onClick={() => window.open(BMC_URL, "_blank")}
-            className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-amber-400/20 bg-amber-400/[0.06] text-[11px] sm:text-xs text-muted-foreground/70 tracking-wide hover:border-amber-400/40 hover:text-muted-foreground transition-all duration-500 group"
+            className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-amber-500/40 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/[0.06] text-[11px] sm:text-xs text-foreground/65 dark:text-muted-foreground/70 tracking-wide hover:border-amber-500/70 dark:hover:border-amber-400/40 hover:text-foreground/90 dark:hover:text-muted-foreground transition-all duration-500 group"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.7 }}
@@ -421,20 +421,20 @@ function AppContent() {
             <motion.span
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="text-amber-400/70"
+              className="text-amber-500 dark:text-amber-400/70"
             >
               ✦
             </motion.span>
             <span>
               No ads · no clutter · no noise —{" "}
-              <span className="text-amber-500/80 group-hover:text-amber-500 transition-colors duration-300">
+              <span className="text-amber-600 dark:text-amber-500/80 group-hover:text-amber-700 dark:group-hover:text-amber-500 transition-colors duration-300">
                 built in silence, kept free by coffee
               </span>
             </span>
             <motion.span
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-              className="text-amber-400/70"
+              className="text-amber-500 dark:text-amber-400/70"
             >
               ✦
             </motion.span>
