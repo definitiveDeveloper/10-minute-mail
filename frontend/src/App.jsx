@@ -22,6 +22,7 @@ import {
 import { I18nProvider, useI18n } from "@/context/I18nContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { USER_LANGUAGES } from "@/config/languages";
+import { languageNames } from "@/config/languageNames";
 import wadeImage from "@/images/WadeMercer.png";
 import lisaImage from "@/images/LisaChen.png";
 import jaydenImage from "@/images/JaydenMorales.png";
@@ -65,10 +66,11 @@ const testimonials = [
 //   3. Create ad units in your AdSense dashboard; replace slot IDs below.
 //   4. Uncomment the <script> tag in frontend/index.html (search "AdSense Script").
 //
-const ADSENSE_PUBLISHER_ID = "ca-pub-XXXXXXXXXXXXXXXX"; // ← replace with your Publisher ID
-const AD_SLOT_MAIN        = "1234567890"; // ← 300×250 or Responsive — after inbox
-const AD_SLOT_LEADERBOARD = "0987654321"; // ← Leaderboard 728×90 / Banner 320×50
-const AD_SLOT_RECTANGLE   = "1122334455"; // ← Rectangle 336×280 / 300×250
+const ADSENSE_PUBLISHER_ID = "ca-pub-9597248637465797";
+// Create three ad units in your AdSense dashboard and paste the slot IDs here:
+const AD_SLOT_MAIN        = ""; // ← slot for the responsive unit after the inbox
+const AD_SLOT_LEADERBOARD = ""; // ← slot for leaderboard between sections
+const AD_SLOT_RECTANGLE   = ""; // ← slot for rectangle before FAQ
 
 function GoogleAd({ slot, format = "auto", style = {}, className = "" }) {
   const ref = useRef(null);
@@ -91,15 +93,21 @@ function GoogleAd({ slot, format = "auto", style = {}, className = "" }) {
   );
 }
 
-// Main ad — responsive block shown after the inbox in the hero
+// Wrapper keeps the visual "Advertisement" label and minimum height so the
+// area is always visible on the page — Google's ad fills it once approved.
 function AdPlaceholder() {
   return (
-    <div className="my-6 flex justify-center">
-      <GoogleAd
-        slot={AD_SLOT_MAIN}
-        format="auto"
-        style={{ minWidth: 300, maxWidth: 728, width: "100%" }}
-      />
+    <div className="my-8 w-full">
+      <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 text-center mb-1 select-none">
+        Advertisement
+      </p>
+      <div className="flex justify-center min-h-[90px] bg-muted/10 rounded-lg border border-dashed border-muted-foreground/20">
+        <GoogleAd
+          slot={AD_SLOT_MAIN}
+          format="auto"
+          style={{ minWidth: 300, maxWidth: 728, width: "100%" }}
+        />
+      </div>
     </div>
   );
 }
@@ -108,29 +116,41 @@ function AdPlaceholder() {
 function AdBanner({ variant = "leaderboard" }) {
   if (variant === "rectangle") {
     return (
-      <div className="flex justify-center py-2 px-4">
-        <GoogleAd
-          slot={AD_SLOT_RECTANGLE}
-          format="auto"
-          style={{ minWidth: 300, maxWidth: 336, width: "100%" }}
-        />
+      <div className="flex flex-col items-center py-2 px-4 gap-1">
+        <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 select-none">
+          Advertisement
+        </p>
+        <div className="min-h-[250px] min-w-[300px] bg-muted/10 rounded-xl border border-dashed border-muted-foreground/20 flex items-center justify-center">
+          <GoogleAd
+            slot={AD_SLOT_RECTANGLE}
+            format="auto"
+            style={{ minWidth: 300, maxWidth: 336, width: "100%" }}
+          />
+        </div>
       </div>
     );
   }
   // leaderboard
   return (
-    <div className="flex justify-center px-4">
-      <GoogleAd
-        slot={AD_SLOT_LEADERBOARD}
-        format="auto"
-        style={{ width: "100%", maxWidth: 728 }}
-      />
+    <div className="flex flex-col items-center px-4 gap-1">
+      <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 select-none">
+        Advertisement
+      </p>
+      <div className="w-full min-h-[90px] bg-muted/10 rounded-xl border border-dashed border-muted-foreground/20 flex items-center justify-center">
+        <GoogleAd
+          slot={AD_SLOT_LEADERBOARD}
+          format="auto"
+          style={{ width: "100%", maxWidth: 728 }}
+        />
+      </div>
     </div>
   );
 }
 
 function AppContent() {
   const { t, setLanguage, currentLanguage } = useI18n();
+  // Translated language names for the current UI language
+  const activeLangNames = languageNames[currentLanguage] || languageNames.en;
   const [currentEmail, setCurrentEmail] = useState("");
   const [emailExpiry, setEmailExpiry] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -262,8 +282,9 @@ function AppContent() {
                 <Button variant="outline" size="sm" className="gap-2">
                   <Globe className="h-4 w-4" />
                   <span className="hidden sm:inline">
-                    {USER_LANGUAGES.find((lang) => lang.code === currentLanguage)
-                      ?.nativeName || "Language"}
+                    {activeLangNames[currentLanguage] ||
+                      USER_LANGUAGES.find((l) => l.code === currentLanguage)?.nativeName ||
+                      "Language"}
                   </span>
                   <span className="sm:hidden">{currentLanguage.toUpperCase()}</span>
                 </Button>
@@ -279,7 +300,8 @@ function AppContent() {
                     className={lang.code === currentLanguage ? "bg-accent font-semibold" : ""}
                   >
                     <span className="mr-2 text-muted-foreground text-xs w-8 shrink-0">{lang.code.toUpperCase()}</span>
-                    {lang.nativeName}
+                    {/* Show the language's name translated into the currently active UI language */}
+                    {activeLangNames[lang.code] || lang.nativeName}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -290,7 +312,7 @@ function AppContent() {
             <button
               className="flex items-center gap-2 bg-[#FFDD00] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow hover:brightness-110 transition duration-200 text-xs sm:text-sm"
               onClick={() =>
-                window.open("https://www.buymeacoffee.com/yourname", "_blank")
+                window.open("https://www.buymeacoffee.com/MeansMuch", "_blank")
               }
               title={t("buyMeACoffeeTooltip")}
             >
