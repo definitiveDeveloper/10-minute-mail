@@ -156,15 +156,15 @@ function CoffeeDivider() {
       <div className="h-px flex-1 bg-border/25" />
       <motion.button
         onClick={() => window.open(BMC_URL, "_blank")}
-        className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/30 select-none"
+        className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] select-none"
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.96 }}
-        animate={{ color: ["rgba(100,100,100,0.3)", "rgba(180,140,60,0.6)", "rgba(100,100,100,0.3)"] }}
+        animate={{ color: ["rgba(80,65,50,0.65)", "rgba(180,120,0,0.95)", "rgba(80,65,50,0.65)"] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <SteamCup className="opacity-70" />
+        <SteamCup />
         <span>kept free by community</span>
-        <SteamCup className="opacity-70" />
+        <SteamCup />
       </motion.button>
       <div className="h-px flex-1 bg-border/25" />
     </div>
@@ -728,7 +728,7 @@ function AppContent() {
           </div>
           <div className="pt-8 border-t border-border text-muted-foreground">
             <p className="text-sm">
-              &copy; {new Date().getFullYear()} 10 Minute Mail.{" "}
+              &copy; {new Date().getFullYear()} &middot; 10 Minute Mail.{" "}
               {t("footerRightsReserved")}
             </p>
           </div>
