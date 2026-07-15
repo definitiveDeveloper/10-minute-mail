@@ -67,12 +67,14 @@ const testimonials = [
 //   4. Uncomment the <script> tag in frontend/index.html (search "AdSense Script").
 //
 const ADSENSE_PUBLISHER_ID = "ca-pub-9597248637465797";
-// Create three ad units in your AdSense dashboard and paste the slot IDs here:
-const AD_SLOT_MAIN        = ""; // ← slot for the responsive unit after the inbox
-const AD_SLOT_LEADERBOARD = ""; // ← slot for leaderboard between sections
-const AD_SLOT_RECTANGLE   = ""; // ← slot for rectangle before FAQ
+// Square display ad  — 10-minute-mail-online-square  (slot 6591819888)
+// Used in the main hero area and before the FAQ section.
+const AD_SLOT_SQUARE  = "6591819888";
+// Infeed / native ad — 10-minute-mail-online-infeed  (slot 2349322549)
+// Used between content sections.
+const AD_SLOT_INFEED  = "2349322549";
 
-function GoogleAd({ slot, format = "auto", style = {}, className = "" }) {
+function GoogleAd({ slot, format = "auto", layoutKey, style = {}, className = "" }) {
   const ref = useRef(null);
   useEffect(() => {
     if (!ref.current) return;
@@ -88,22 +90,21 @@ function GoogleAd({ slot, format = "auto", style = {}, className = "" }) {
       data-ad-client={ADSENSE_PUBLISHER_ID}
       data-ad-slot={slot}
       data-ad-format={format}
-      data-full-width-responsive="true"
+      {...(layoutKey ? { "data-ad-layout-key": layoutKey } : { "data-full-width-responsive": "true" })}
     />
   );
 }
 
-// Wrapper keeps the visual "Advertisement" label and minimum height so the
-// area is always visible on the page — Google's ad fills it once approved.
+// Square display ad after the inbox (10-minute-mail-online-square)
 function AdPlaceholder() {
   return (
     <div className="my-8 w-full">
       <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 text-center mb-1 select-none">
         Advertisement
       </p>
-      <div className="flex justify-center min-h-[90px] bg-muted/10 rounded-lg border border-dashed border-muted-foreground/20">
+      <div className="flex justify-center min-h-[100px] bg-muted/10 rounded-lg border border-dashed border-muted-foreground/20">
         <GoogleAd
-          slot={AD_SLOT_MAIN}
+          slot={AD_SLOT_SQUARE}
           format="auto"
           style={{ minWidth: 300, maxWidth: 728, width: "100%" }}
         />
@@ -112,9 +113,10 @@ function AdPlaceholder() {
   );
 }
 
-// Banner ad — leaderboard on desktop, banner on mobile
+// AdBanner — infeed between sections, square display before FAQ
 function AdBanner({ variant = "leaderboard" }) {
   if (variant === "rectangle") {
+    // Square display ad (10-minute-mail-online-square)
     return (
       <div className="flex flex-col items-center py-2 px-4 gap-1">
         <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 select-none">
@@ -122,7 +124,7 @@ function AdBanner({ variant = "leaderboard" }) {
         </p>
         <div className="min-h-[250px] min-w-[300px] bg-muted/10 rounded-xl border border-dashed border-muted-foreground/20 flex items-center justify-center">
           <GoogleAd
-            slot={AD_SLOT_RECTANGLE}
+            slot={AD_SLOT_SQUARE}
             format="auto"
             style={{ minWidth: 300, maxWidth: 336, width: "100%" }}
           />
@@ -130,7 +132,7 @@ function AdBanner({ variant = "leaderboard" }) {
       </div>
     );
   }
-  // leaderboard
+  // Infeed / native ad between content sections (10-minute-mail-online-infeed)
   return (
     <div className="flex flex-col items-center px-4 gap-1">
       <p className="text-[10px] uppercase tracking-widest text-muted-foreground/40 select-none">
@@ -138,8 +140,9 @@ function AdBanner({ variant = "leaderboard" }) {
       </p>
       <div className="w-full min-h-[90px] bg-muted/10 rounded-xl border border-dashed border-muted-foreground/20 flex items-center justify-center">
         <GoogleAd
-          slot={AD_SLOT_LEADERBOARD}
-          format="auto"
+          slot={AD_SLOT_INFEED}
+          format="fluid"
+          layoutKey="-ef+6k-30-ac+ty"
           style={{ width: "100%", maxWidth: 728 }}
         />
       </div>
