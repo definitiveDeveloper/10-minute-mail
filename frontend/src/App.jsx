@@ -26,6 +26,7 @@ import { languageNames } from "@/config/languageNames";
 import wadeImage from "@/images/WadeMercer.png";
 import lisaImage from "@/images/LisaChen.png";
 import jaydenImage from "@/images/JaydenMorales.png";
+import avaImage from "@/images/AvaRoberts.png";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -59,9 +60,56 @@ const testimonials = [
 
 const BMC_URL = "https://www.buymeacoffee.com/MeansMuch";
 
+// A coffee cup emoji that quietly bobs — used inside every BMC touch-point.
+function SteamCup({ className = "" }) {
+  return (
+    <motion.span
+      aria-hidden
+      className={`inline-block select-none ${className}`}
+      animate={{ y: [0, -3, 0] }}
+      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+    >
+      ☕
+    </motion.span>
+  );
+}
+
+// Yellow BMC button with periodic shimmer + golden glow pulse.
+// Drop-in replacement for any <button> that opens BMC.
+function CoffeeButton({ onClick, children, className = "", title = "" }) {
+  return (
+    <motion.button
+      onClick={onClick}
+      title={title}
+      className={`relative overflow-hidden cursor-pointer ${className}`}
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.95 }}
+      animate={{
+        boxShadow: [
+          "0 0 0px 0px rgba(255,221,0,0)",
+          "0 0 18px 3px rgba(255,221,0,0.38)",
+          "0 0 0px 0px rgba(255,221,0,0)",
+        ],
+      }}
+      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2.5 }}
+    >
+      {children}
+      {/* Light-gleam sweep across the surface */}
+      <motion.span
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(108deg, transparent 30%, rgba(255,255,255,0.42) 50%, transparent 70%)",
+        }}
+        animate={{ x: ["-180%", "180%"] }}
+        transition={{ duration: 1.6, repeat: Infinity, repeatDelay: 5.5, ease: "easeInOut" }}
+      />
+    </motion.button>
+  );
+}
+
 // ── Placement 1: After inbox ──────────────────────────────────────────────────
-// Appears 2 s after mount so it feels ambient, not immediate.
-// Reads like a status indicator, not a donation ask.
 function CoffeeWhisper() {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -78,9 +126,11 @@ function CoffeeWhisper() {
           transition={{ duration: 1.4 }}
         >
           <div className="h-px flex-1 bg-border/40 max-w-[100px]" />
-          <button
+          <motion.button
             onClick={() => window.open(BMC_URL, "_blank")}
             className="flex items-center gap-2 text-[11px] text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors duration-500 group"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
           >
             <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
@@ -88,10 +138,10 @@ function CoffeeWhisper() {
             </span>
             <span className="tracking-wide">servers online</span>
             <span className="text-border/60">·</span>
-            <span className="group-hover:text-amber-500 transition-colors duration-300">
-              kept free by ☕
+            <span className="group-hover:text-amber-500 transition-colors duration-300 flex items-center gap-1">
+              kept free by <SteamCup />
             </span>
-          </button>
+          </motion.button>
           <div className="h-px flex-1 bg-border/40 max-w-[100px]" />
         </motion.div>
       )}
@@ -100,31 +150,29 @@ function CoffeeWhisper() {
 }
 
 // ── Placement 2: Between sections ────────────────────────────────────────────
-// Looks like a typographic section break. The ☕ expands on hover.
 function CoffeeDivider() {
   return (
     <div className="py-8 flex items-center justify-center gap-4 px-6">
       <div className="h-px flex-1 bg-border/25" />
-      <button
+      <motion.button
         onClick={() => window.open(BMC_URL, "_blank")}
-        className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/30 hover:text-muted-foreground/70 transition-all duration-500 group select-none"
+        className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/30 select-none"
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.96 }}
+        animate={{ color: ["rgba(100,100,100,0.3)", "rgba(180,140,60,0.6)", "rgba(100,100,100,0.3)"] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <span className="transition-transform duration-500 group-hover:scale-125 group-hover:rotate-[-8deg]">
-          ☕
-        </span>
+        <SteamCup className="opacity-70" />
         <span>kept free by community</span>
-        <span className="transition-transform duration-500 group-hover:scale-125 group-hover:rotate-[8deg]">
-          ☕
-        </span>
-      </button>
+        <SteamCup className="opacity-70" />
+      </motion.button>
       <div className="h-px flex-1 bg-border/25" />
     </div>
   );
 }
 
 // ── Placement 3: After testimonials ──────────────────────────────────────────
-// Looks like a 4th testimonial card — creator speaking directly.
-// Same card-gradient + border as surrounding testimonials so it blends naturally.
+// Styled as a 4th testimonial card — creator speaking in first person.
 function CreatorCard() {
   return (
     <div className="pb-6 px-4 flex justify-center">
@@ -137,8 +185,8 @@ function CreatorCard() {
       >
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent pointer-events-none" />
         <div className="flex items-center gap-1 mb-4">
-          {["☕", "☕", "☕", "☕", "☕"].map((c, i) => (
-            <span key={i} className="text-amber-400 text-sm">{c}</span>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <SteamCup key={i} className="text-amber-400 text-sm" />
           ))}
         </div>
         <p className="mb-5 text-sm text-muted-foreground/80 leading-relaxed italic">
@@ -148,23 +196,30 @@ function CreatorCard() {
         </p>
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
-              A
-            </div>
+            <Avatar className="h-10 w-10 border-2 border-amber-400/40 rounded-full overflow-hidden flex-shrink-0">
+              <AvatarImage
+                src={avaImage}
+                alt="Ava Roberts"
+                className="object-cover object-top w-full h-full"
+              />
+              <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white font-bold text-sm">
+                A
+              </AvatarFallback>
+            </Avatar>
             <div>
-              <p className="font-semibold text-sm">AvaRoberts</p>
+              <p className="font-semibold text-sm">Ava Roberts</p>
               <p className="text-xs text-muted-foreground">Creator, 10 Minute Mail</p>
             </div>
           </div>
-          <button
+          <CoffeeButton
             onClick={() => window.open(BMC_URL, "_blank")}
-            className="flex items-center gap-1.5 bg-[#FFDD00] text-black px-3 py-1.5 rounded-full text-[11px] font-medium hover:brightness-105 active:scale-95 transition-all duration-200 shadow-sm flex-shrink-0"
+            className="flex items-center gap-1.5 bg-[#FFDD00] text-black px-3 py-1.5 rounded-full text-[11px] font-medium shadow-sm flex-shrink-0"
           >
-            <span>☕</span>
+            <SteamCup className="text-[13px]" />
             <span style={{ fontFamily: "'Pacifico', cursive", fontWeight: 400 }}>
               Buy a coffee
             </span>
-          </button>
+          </CoffeeButton>
         </div>
       </motion.div>
     </div>
@@ -333,25 +388,19 @@ function AppContent() {
             <p className="text-xs sm:text-sm text-muted-foreground font-medium hidden md:block">
               {t("poweredByPassion")}
             </p>
-            <button
-              className="flex items-center gap-2 bg-[#FFDD00] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow hover:brightness-110 transition duration-200 text-xs sm:text-sm"
-              onClick={() =>
-                window.open("https://www.buymeacoffee.com/MeansMuch", "_blank")
-              }
+            <CoffeeButton
+              onClick={() => window.open(BMC_URL, "_blank")}
               title={t("buyMeACoffeeTooltip")}
+              className="flex items-center gap-2 bg-[#FFDD00] text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow text-xs sm:text-sm"
             >
-              <img
-                src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg"
-                alt={t("coffeeMugAlt")}
-                className="h-4 w-4 sm:h-5 sm:w-5"
-              />
+              <SteamCup className="text-sm sm:text-base leading-none" />
               <span
                 style={{ fontFamily: "'Pacifico', cursive", fontWeight: 400 }}
                 className="hidden sm:inline"
               >
                 {t("buyMeACoffee")}
               </span>
-            </button>
+            </CoffeeButton>
           </div>
         </nav>
 
@@ -362,6 +411,35 @@ function AppContent() {
           animate="animate"
           variants={fadeIn}
         >
+          <motion.button
+            onClick={() => window.open(BMC_URL, "_blank")}
+            className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-amber-400/20 bg-amber-400/[0.06] text-[11px] sm:text-xs text-muted-foreground/70 tracking-wide hover:border-amber-400/40 hover:text-muted-foreground transition-all duration-500 group"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+          >
+            <motion.span
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="text-amber-400/70"
+            >
+              ✦
+            </motion.span>
+            <span>
+              No ads · no clutter · no noise —{" "}
+              <span className="text-amber-500/80 group-hover:text-amber-500 transition-colors duration-300">
+                built in silence, kept free by coffee
+              </span>
+            </span>
+            <motion.span
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+              className="text-amber-400/70"
+            >
+              ✦
+            </motion.span>
+          </motion.button>
+
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">
             {t("mainHeading1")}{" "}
             <span className="gradient-text">{t("mainHeading2")}</span>{" "}
