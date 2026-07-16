@@ -49,7 +49,7 @@ export default function Stats() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-6">
           {stats.map((stat) => (
             <div key={stat.labelKey} className="flex flex-col items-center text-center">
-              <p className="text-3xl sm:text-4xl font-bold text-primary leading-none mb-2">
+              <p className="text-4xl sm:text-5xl font-bold text-primary leading-none mb-2">
                 <AnimatedCounter numericEnd={stat.numericEnd} prefix={stat.prefix || ""} suffix={stat.suffix} />
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground font-medium">{t(stat.labelKey)}</p>

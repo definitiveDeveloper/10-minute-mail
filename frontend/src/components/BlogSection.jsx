@@ -37,7 +37,7 @@ function ArticleCard({ article, isFeatured, t }) {
             {new Date(article.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
           </time>
         </div>
-        <h3 className={`font-bold mb-2 leading-snug ${isFeatured ? "text-xl sm:text-2xl" : "text-lg"}`}>{article.title}</h3>
+        <h3 className={`font-semibold mb-2 leading-snug ${isFeatured ? "text-xl sm:text-2xl" : "text-lg"}`}>{article.title}</h3>
         <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{article.excerpt}</p>
       </header>
 

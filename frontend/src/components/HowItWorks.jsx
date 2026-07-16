@@ -46,7 +46,7 @@ export default function HowItWorks() {
                   {step.number}
                 </span>
               </div>
-              <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">{step.title}</h3>
               <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{step.description}</p>
             </motion.div>
           );

@@ -6,7 +6,7 @@ function FAQItem({ question, answer, isOpen, onToggle }) {
   return (
     <div className="border-b border-border last:border-0">
       <button onClick={onToggle} className="w-full flex items-center justify-between py-5 text-left gap-4 group" aria-expanded={isOpen}>
-        <span className="font-semibold text-sm sm:text-base group-hover:text-primary transition-colors">{question}</span>
+        <span className="font-semibold text-base group-hover:text-primary transition-colors">{question}</span>
         <ChevronDown className={`w-5 h-5 flex-shrink-0 text-muted-foreground transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
       </button>
       <div className={`faq-answer ${isOpen ? "open" : ""}`} aria-hidden={!isOpen}>

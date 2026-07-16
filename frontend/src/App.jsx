@@ -472,7 +472,7 @@ function AppContent() {
             <span className="gradient-text">{t("mainHeading2")}</span>{" "}
             {t("mainHeading3")}
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mb-3 max-w-md sm:max-w-xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground mb-3 max-w-md sm:max-w-xl mx-auto">
             {t("subHeading")}
           </p>
 
@@ -620,7 +620,7 @@ function AppContent() {
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
             {t("testimonialsHeading")}
           </h2>
-          <p className="text-muted-foreground max-w-lg sm:max-w-2xl mx-auto text-sm sm:text-base">
+          <p className="text-muted-foreground max-w-lg sm:max-w-2xl mx-auto text-base sm:text-lg">
             {t("testimonialsSubheading")}
           </p>
         </motion.div>
@@ -661,8 +661,8 @@ function AppContent() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold text-sm">{testimonial.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="font-semibold text-base">{testimonial.name}</p>
+                  <p className="text-sm text-muted-foreground">
                     {t(
                       testimonial.role
                         .toLowerCase()
