@@ -476,7 +476,7 @@ function AppContent() {
             {t("subHeading")}
           </p>
 
-          {/* Email display + New Address button */}
+          {/* Email display + New Address button + Extend button */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-xl sm:max-w-3xl mx-auto">
             <div className="w-full sm:flex-1">
               {emailLoading ? (
@@ -487,17 +487,37 @@ function AppContent() {
                 <EmailDisplay email={currentEmail} />
               )}
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleNewAddress}
-              disabled={emailLoading}
-              title={t("newAddressButton")}
-              className="flex-shrink-0 gap-1.5 text-muted-foreground hover:text-foreground"
-            >
-              <RotateCcw className="h-4 w-4" />
-              <span className="text-xs">{t("newAddressButton")}</span>
-            </Button>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleNewAddress}
+                disabled={emailLoading}
+                title={t("newAddressButton")}
+                className="gap-1.5 text-muted-foreground hover:text-foreground"
+              >
+                <RotateCcw className="h-4 w-4" />
+                <span className="text-xs">{t("newAddressButton")}</span>
+              </Button>
+              <AnimatePresence>
+                {showExtendButton && (
+                  <motion.button
+                    key="extend"
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.85 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={extendEmailSession}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-500 text-white text-xs font-semibold hover:bg-amber-600 transition-colors cursor-pointer shadow-sm"
+                  >
+                    <Clock className="h-3.5 w-3.5" />
+                    <span>+10 min</span>
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* ── IP lock badge + timer ── */}
@@ -546,30 +566,6 @@ function AppContent() {
               )}
             </AnimatePresence>
           </div>
-
-          {/* ── Extend session button — appears when time is running low ── */}
-          <AnimatePresence>
-            {showExtendButton && (
-              <motion.div
-                key="extend-btn-row"
-                initial={{ opacity: 0, y: -8, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: 'auto' }}
-                exit={{ opacity: 0, y: -8, height: 0 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="flex justify-center mt-2"
-              >
-                <motion.button
-                  onClick={extendEmailSession}
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-5 py-1.5 rounded-full bg-amber-500 text-white text-xs font-semibold hover:bg-amber-600 transition-colors cursor-pointer shadow-md shadow-amber-500/30 border border-amber-400"
-                >
-                  <Clock className="h-3.5 w-3.5" />
-                  <span>+10 minutes</span>
-                </motion.button>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Inbox */}
           <div className="mt-2">
