@@ -1,0 +1,29 @@
+{
+  "name": "10 Minute Mail",
+  "short_name": "10MinMail",
+  "description": "Free instant disposable temporary email. No sign-up, no spam, 100% anonymous.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["utilities", "productivity", "security"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.svg",
+      "sizes": "1200x630",
+      "type": "image/svg+xml",
+      "label": "10 Minute Mail — Instant disposable email"
+    }
+  ]
+}
