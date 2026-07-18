@@ -4,7 +4,7 @@ import tls from 'tls';
 const DOMAIN = '10-minute-mail.online';
 const START_TIME = Date.now();
 
-export const ALLOWED_EMAIL = 'nidheesh.socials@gmail.com';
+export const ALLOWED_EMAIL = '1994nidheesh@gmail.com';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
