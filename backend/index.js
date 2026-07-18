@@ -1,3 +1,4 @@
+import 'dotenv/config'; // loads backend/.env for local dev (no-op on Render)
 import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
