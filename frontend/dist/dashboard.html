@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>10 Minute Mail — Admin Dashboard</title>
+<meta name="robots" content="noindex,nofollow" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f172a;--surface:#1e293b;--surface2:#162032;--border:#334155;
+  --text:#f1f5f9;--muted:#94a3b8;--muted2:#64748b;
+  --primary:#6366f1;--primary-dim:#1e1b4b;
+  --green:#22c55e;--green-bg:#052e16;--green-border:#166534;
+  --yellow:#f59e0b;--yellow-bg:#451a03;--yellow-border:#92400e;
+  --red:#ef4444;--red-bg:#450a0a;--red-border:#991b1b;
+  --radius:12px;--card-pad:1.25rem;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+
+/* ── Login ─────────────────────────────────────────────── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:2.5rem 2rem;text-align:center;max-width:380px;width:100%}
+.login-logo{font-size:2.5rem;margin-bottom:0.75rem}
+.login-card h1{font-size:1.3rem;font-weight:700;margin-bottom:0.35rem}
+.login-card .sub{color:var(--muted);font-size:0.8rem;margin-bottom:2rem}
+#g_id_signin{display:flex;justify-content:center;margin-bottom:1rem}
+.setup-note{background:#0f0e1a;border:1px solid #312e81;border-radius:8px;padding:1rem;text-align:left;margin-top:1rem;font-size:0.78rem;color:#a5b4fc}
+.setup-note strong{color:var(--text);display:block;margin-bottom:0.4rem}
+.setup-note code{background:#1e1b3a;padding:2px 6px;border-radius:4px;font-family:monospace;color:#e2e8f0;display:block;margin:0.2rem 0}
+#auth-error{color:var(--red);font-size:0.78rem;margin-top:0.75rem;display:none}
+
+/* ── Layout ────────────────────────────────────────────── */
+#dash-screen{display:none;min-height:100vh}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;position:sticky;top:0;z-index:10}
+.h-left{display:flex;align-items:center;gap:.6rem}
+.h-logo{font-size:1.3rem}
+.h-title{font-size:.9rem;font-weight:600;white-space:nowrap}
+.h-right{display:flex;align-items:center;gap:.75rem;font-size:.78rem;color:var(--muted)}
+.avatar{width:24px;height:24px;border-radius:50%;border:1px solid var(--border)}
+.sign-out{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.25rem .6rem;border-radius:6px;cursor:pointer;font-size:.72rem;transition:all .15s}
+.sign-out:hover{border-color:var(--red);color:var(--red)}
+
+.toolbar{background:var(--bg);border-bottom:1px solid var(--border);padding:.4rem 1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;font-size:.72rem;color:var(--muted)}
+.refresh-btn{background:var(--primary);color:#fff;border:none;padding:.25rem .65rem;border-radius:5px;cursor:pointer;font-size:.72rem;transition:opacity .15s}
+.refresh-btn:hover{opacity:.85}
+.refresh-btn:disabled{opacity:.5;cursor:default}
+#countdown-ring{display:inline-flex;align-items:center;gap:.3rem}
+
+/* ── Banner ────────────────────────────────────────────── */
+.banner{margin:1rem 1.25rem .5rem;padding:.85rem 1rem;border-radius:10px;display:flex;align-items:center;gap:.6rem;font-weight:600;font-size:.875rem;display:none}
+.banner.ok{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.banner.degraded{background:var(--yellow-bg);border:1px solid var(--yellow-border);color:var(--yellow)}
+.banner.outage{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+
+/* ── Grid ──────────────────────────────────────────────── */
+.grid{padding:.5rem 1.25rem 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:var(--card-pad)}
+.card.wide{grid-column:1/-1}
+.card.half{grid-column:span 1}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;gap:.5rem}
+.card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+
+/* ── Status atoms ──────────────────────────────────────── */
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot.g{background:var(--green);box-shadow:0 0 6px #22c55e60}
+.dot.y{background:var(--yellow);box-shadow:0 0 6px #f59e0b60}
+.dot.r{background:var(--red);box-shadow:0 0 6px #ef444460}
+.dot.grey{background:#475569}
+
+.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.18rem .55rem;border-radius:999px;font-size:.7rem;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.badge.g{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge.r{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.badge.y{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border)}
+.badge.grey{background:#1e293b;color:#64748b;border:1px solid #334155}
+
+/* ── Rows ──────────────────────────────────────────────── */
+.row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid #1a2234;gap:.5rem}
+.row:last-child{border-bottom:none}
+.rl{color:var(--muted);font-size:.78rem;flex-shrink:0}
+.rv{font-size:.82rem;font-weight:500;text-align:right;word-break:break-all}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.75rem;background:#0f172a;padding:1px 5px;border-radius:4px}
+
+/* ── Progress bar ──────────────────────────────────────── */
+.pbar{background:#334155;border-radius:999px;height:5px;margin-top:.4rem;overflow:hidden}
+.pfill{height:100%;border-radius:999px;transition:width .4s}
+.pfill.g{background:var(--green)}.pfill.y{background:var(--yellow)}.pfill.r{background:var(--red)}
+
+/* ── Provider row ──────────────────────────────────────── */
+.prow{display:flex;align-items:center;gap:.5rem;padding:.35rem 0;border-bottom:1px solid #1a2234}
+.prow:last-child{border-bottom:none}
+.prow .name{flex:1;font-size:.82rem}
+.prow .lat{color:var(--muted);font-size:.72rem}
+
+/* ── Deploy row ────────────────────────────────────────── */
+.drow{display:flex;align-items:center;gap:.4rem;padding:.28rem 0;border-bottom:1px solid #1a2234;font-size:.72rem}
+.drow:last-child{border-bottom:none}
+.drow .dtrig{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drow .dtime{color:var(--muted);flex-shrink:0}
+
+/* ── Not-configured box ────────────────────────────────── */
+.nc{background:#0c1829;border:1px dashed #334155;border-radius:8px;padding:.65rem .75rem;font-size:.75rem;color:#475569;line-height:1.6}
+.nc code{color:#94a3b8;display:block}
+
+/* ── Big number ────────────────────────────────────────── */
+.big-num{font-size:2rem;font-weight:700;line-height:1}
+
+/* ── Costs row ─────────────────────────────────────────── */
+.costs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:.75rem}
+.cost-item .ci-label{font-size:.7rem;color:var(--muted);margin-bottom:.3rem}
+.cost-item .ci-value{font-size:1.4rem;font-weight:700;line-height:1.2}
+.cost-item .ci-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+
+/* ── Skeleton ──────────────────────────────────────────── */
+.skel{background:linear-gradient(90deg,#1e293b 25%,#253347 50%,#1e293b 75%);background-size:200% 100%;animation:shim 1.5s infinite;border-radius:6px;height:16px;margin:.25rem 0}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── Uptime bar ────────────────────────────────────────── */
+.uptime-blocks{display:flex;gap:2px;flex-wrap:wrap;margin-top:.5rem}
+.ub{width:16px;height:24px;border-radius:3px}
+.ub.g{background:var(--green)}
+.ub.r{background:var(--red)}
+.ub.grey{background:#334155}
+</style>
+</head>
+<body>
+
+<!-- ── Login ──────────────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">⏱</div>
+    <h1>Admin Dashboard</h1>
+    <p class="sub">10 Minute Mail infrastructure monitoring<br>Access restricted to authorised account</p>
+    <div id="g_id_signin"></div>
+    <div id="setup-note" style="display:none" class="setup-note">
+      <strong>Google Sign-In not configured</strong>
+      Add to Render environment variables:
+      <code>GOOGLE_CLIENT_ID=your-client-id</code>
+      <br>
+      Get a Client ID: Google Cloud Console → APIs &amp; Services → Credentials → Create OAuth 2.0 Client ID (Web application). Add <code>https://10-minute-mail.online</code> as Authorized JavaScript Origin.
+    </div>
+    <div id="auth-error"></div>
+  </div>
+</div>
+
+<!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+<div id="dash-screen">
+  <header>
+    <div class="h-left">
+      <span class="h-logo">⏱</span>
+      <span class="h-title">10 Minute Mail &mdash; Admin Dashboard</span>
+    </div>
+    <div class="h-right">
+      <img id="user-avatar" class="avatar" style="display:none" alt="" />
+      <span id="user-email-display"></span>
+      <button class="sign-out" onclick="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <span id="last-refresh-label">Loading…</span>
+    <span id="countdown-ring">· Auto-refresh in <b id="cdown">30</b>s</span>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadMetrics()">↻ Refresh now</button>
+  </div>
+
+  <div id="status-banner" class="banner ok">
+    <span class="dot g" id="banner-dot"></span>
+    <span id="banner-text">Checking…</span>
+  </div>
+
+  <div class="grid" id="grid">
+    <!-- skeleton cards while loading -->
+    <div class="card"><div class="card-head"><span class="card-title">Site Health</span></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="card"><div class="card-head"><span class="card-title">DNS</span></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Render</span></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Mail Providers</span></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Active Sessions</span></div><div class="skel"></div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Backend</span></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Domain</span></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="card wide"><div class="card-head"><span class="card-title">Cost Summary</span></div><div class="skel"></div></div>
+  </div>
+</div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+const ALLOWED = 'nidheesh.socials@gmail.com';
+let token = localStorage.getItem('dash_token');
+let gClientId = '';
+let cdInterval = null;
+let cdLeft = 30;
+
+// ── Boot ───────────────────────────────────────────────────────────────────────
+async function boot() {
+  try {
+    const cfg = await fetch('/api/dashboard/config').then(r => r.json());
+    gClientId = cfg.googleClientId || '';
+  } catch {}
+
+  if (token) {
+    const ok = await fetchAndRender();
+    if (!ok) { token = null; localStorage.removeItem('dash_token'); showLogin(); }
+  } else {
+    showLogin();
+  }
+}
+
+// ── Login ──────────────────────────────────────────────────────────────────────
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('dash-screen').style.display = 'none';
+
+  if (!gClientId) {
+    document.getElementById('setup-note').style.display = 'block';
+    return;
+  }
+
+  const initGsi = () => {
+    if (typeof google === 'undefined') { setTimeout(initGsi, 150); return; }
+    google.accounts.id.initialize({ client_id: gClientId, callback: onCredential, auto_select: false });
+    google.accounts.id.renderButton(document.getElementById('g_id_signin'), {
+      theme: 'outline', size: 'large', shape: 'rectangular', text: 'signin_with', width: 260
+    });
+    google.accounts.id.prompt();
+  };
+  initGsi();
+}
+
+async function onCredential(resp) {
+  try {
+    const r = await fetch('/api/auth/verify-google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: resp.credential })
+    });
+    const body = await r.json();
+    if (!r.ok) { showAuthErr(body.error || 'Authentication failed'); return; }
+    token = body.token;
+    localStorage.setItem('dash_token', token);
+    const ok = await fetchAndRender();
+    if (!ok) showAuthErr('Failed to load dashboard data');
+  } catch (e) { showAuthErr('Network error: ' + e.message); }
+}
+
+function showAuthErr(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function signOut() {
+  token = null;
+  localStorage.removeItem('dash_token');
+  clearInterval(cdInterval);
+  showLogin();
+}
+
+// ── Data ───────────────────────────────────────────────────────────────────────
+async function fetchAndRender() {
+  const r = await fetch('/api/dashboard/metrics', { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) return false;
+  const data = await r.json();
+  showDash(data);
+  render(data);
+  startCountdown();
+  return true;
+}
+
+async function loadMetrics() {
+  if (!token) return;
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  btn.textContent = '↻ Loading…';
+  const r = await fetch('/api/dashboard/metrics', { headers: { Authorization: `Bearer ${token}` } });
+  btn.disabled = false;
+  btn.textContent = '↻ Refresh now';
+  if (r.status === 401) { signOut(); return; }
+  if (!r.ok) return;
+  const data = await r.json();
+  render(data);
+  startCountdown();
+}
+
+function showDash(data) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dash-screen').style.display = 'block';
+  try {
+    const p = JSON.parse(atob(token.split('.')[1]));
+    document.getElementById('user-email-display').textContent = p.email;
+    if (p.picture) {
+      const av = document.getElementById('user-avatar');
+      av.src = p.picture;
+      av.style.display = 'block';
+    }
+  } catch {}
+}
+
+// ── Countdown ──────────────────────────────────────────────────────────────────
+function startCountdown() {
+  clearInterval(cdInterval);
+  cdLeft = 30;
+  document.getElementById('last-refresh-label').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
+  cdInterval = setInterval(() => {
+    cdLeft--;
+    document.getElementById('cdown').textContent = cdLeft;
+    if (cdLeft <= 0) { clearInterval(cdInterval); loadMetrics(); }
+  }, 1000);
+}
+
+// ── Render dashboard ───────────────────────────────────────────────────────────
+function render(m) {
+  updateBanner(m);
+  document.getElementById('grid').innerHTML = [
+    cardSite(m.site, m.ssl),
+    cardDns(m.dns),
+    cardRender(m.render),
+    cardProviders(m.providers),
+    cardSessions(m.self),
+    cardBackend(m.self),
+    cardNamecheap(m.namecheap),
+    cardCosts(m.costs),
+  ].join('');
+}
+
+function updateBanner(m) {
+  const providers = Object.values(m.providers || {});
+  const siteUp = m.site?.up;
+  const sslOk  = m.ssl?.ok;
+  const provsDown = providers.filter(p => !p.ok);
+  const banner = document.getElementById('status-banner');
+  const bdot   = document.getElementById('banner-dot');
+  const btxt   = document.getElementById('banner-text');
+  banner.style.display = 'flex';
+
+  if (!siteUp) {
+    banner.className = 'banner outage';
+    bdot.className = 'dot r';
+    btxt.textContent = 'OUTAGE — Site is unreachable';
+  } else if (!sslOk || provsDown.length > 0) {
+    banner.className = 'banner degraded';
+    bdot.className = 'dot y';
+    const issues = [];
+    if (!sslOk) issues.push('SSL issue');
+    provsDown.forEach(p => issues.push(`${p.label} down`));
+    btxt.textContent = 'DEGRADED — ' + issues.join(' · ');
+  } else {
+    banner.className = 'banner ok';
+    bdot.className = 'dot g';
+    btxt.textContent = 'ALL SYSTEMS OPERATIONAL';
+  }
+}
+
+// ── Card helpers ───────────────────────────────────────────────────────────────
+const dot  = (ok) => `<span class="dot ${ok == null ? 'grey' : ok ? 'g' : 'r'}"></span>`;
+const bdg  = (ok, t, f) => `<span class="badge ${ok == null ? 'grey' : ok ? 'g' : 'r'}">${dot(ok)}${ok ? (t||'OK') : (f||'FAIL')}</span>`;
+const row  = (l, v) => `<div class="row"><span class="rl">${l}</span><span class="rv">${v}</span></div>`;
+const nc   = (lines) => `<div class="nc">${lines.join('')}</div>`;
+
+function timeAgo(iso) {
+  if (!iso) return '—';
+  const d = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (d < 60) return `${d}s ago`;
+  if (d < 3600) return `${Math.floor(d/60)}m ago`;
+  if (d < 86400) return `${Math.floor(d/3600)}h ago`;
+  return `${Math.floor(d/86400)}d ago`;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+}
+
+// ── Individual cards ───────────────────────────────────────────────────────────
+function cardSite(site, ssl) {
+  const sslDays = ssl?.daysLeft;
+  const sslC = sslDays > 30 ? 'g' : sslDays > 7 ? 'y' : 'r';
+  const sslLabel = ssl?.ok ? `<span style="color:var(--${sslC === 'g' ? 'green' : sslC === 'y' ? 'yellow' : 'red'})">${sslDays} days</span>` : `<span style="color:var(--red)">Issue</span>`;
+  return `<div class="card">
+    <div class="card-head"><span class="card-title">Site Health</span>${bdg(site?.up,'ONLINE','OFFLINE')}</div>
+    ${row('URL','<code>10-minute-mail.online</code>')}
+    ${row('HTTP status', site?.status ? String(site.status) : '—')}
+    ${row('Response time', site?.latencyMs ? site.latencyMs+'ms' : '—')}
+    ${row('SSL cert', sslLabel)}
+    ${row('SSL issuer', ssl?.issuer || '—')}
+    ${row('SSL valid until', fmtDate(ssl?.validTo))}
+    ${site?.error ? `<div style="color:var(--red);font-size:.72rem;margin-top:.5rem">⚠ ${site.error}</div>` : ''}
+  </div>`;
+}
+
+function cardDns(dns) {
+  const ips = (dns?.aRecords||[]).join(', ') || '—';
+  const ns  = (dns?.nsRecords||[]).slice(0,2).join(', ') || '—';
+  return `<div class="card">
+    <div class="card-head"><span class="card-title">DNS</span>${bdg(dns?.ok)}</div>
+    ${row('A record', `<code>${ips}</code>`)}
+    ${row('Nameservers', `<code style="font-size:.68rem">${ns}</code>`)}
+    ${row('MX records', dns?.mxRecords?.length ? dns.mxRecords.length + ' record(s)' : 'None')}
+    ${dns?.error ? `<div style="color:var(--red);font-size:.72rem;margin-top:.5rem">⚠ ${dns.error}</div>` : ''}
+  </div>`;
+}
+
+function cardRender(r) {
+  if (!r?.configured) return `<div class="card">
+    <div class="card-head"><span class="card-title">Render (Hosting)</span><span class="badge grey">Not configured</span></div>
+    ${nc(['Set Render env vars to see hosting metrics:','<code>RENDER_API_KEY</code>','<code>RENDER_SERVICE_ID</code>','Find your service ID in the Render dashboard URL.'])}
+  </div>`;
+
+  const live = ['live','running','active'].includes(String(r.status).toLowerCase());
+  const deps = r.deploys || [];
+  const lastDep = deps[0];
+
+  return `<div class="card">
+    <div class="card-head"><span class="card-title">Render (Hosting)</span>${bdg(live, r.status?.toUpperCase()||'LIVE', r.status?.toUpperCase()||'ISSUE')}</div>
+    ${row('Service', r.name || '10-minute-mail')}
+    ${row('Plan', r.plan || '—')}
+    ${row('Region', r.region || '—')}
+    ${row('Last deploy', lastDep ? timeAgo(lastDep.createdAt) : '—')}
+    ${row('Deploy status', lastDep ? bdg(lastDep.status==='live', lastDep.status) : '—')}
+    ${deps.length ? `<div style="margin-top:.65rem;font-size:.68rem;color:var(--muted);margin-bottom:.25rem">Deploy history</div>
+      ${deps.map(d=>`<div class="drow">${dot(d.status==='live')}<span class="dtrig">${d.trigger||'git push'}</span><span class="dtime">${timeAgo(d.createdAt)}</span></div>`).join('')}` : ''}
+    ${r.error ? `<div style="color:var(--red);font-size:.72rem;margin-top:.5rem">⚠ ${r.error}</div>` : ''}
+  </div>`;
+}
+
+function cardProviders(providers) {
+  const list = Object.values(providers || {});
+  const allOk = list.length > 0 && list.every(p => p.ok);
+  return `<div class="card">
+    <div class="card-head"><span class="card-title">Mail Providers</span>${bdg(list.length ? allOk : null, 'ALL HEALTHY', 'ISSUES')}</div>
+    ${list.length === 0 ? '<div class="skel"></div>' : list.map(p=>`
+      <div class="prow">
+        ${dot(p.ok)}
+        <span class="name">${p.label}</span>
+        ${p.domains?.length ? `<span class="lat">${p.domains.length} domain(s)</span>` : ''}
+        <span class="lat">${p.latencyMs ? p.latencyMs+'ms' : p.error ? '⚠ err' : ''}</span>
+      </div>`).join('')}
+  </div>`;
+}
+
+function cardSessions(self) {
+  const total = self?.activeSessions ?? 0;
+  const byProv = self?.sessionsByProvider || {};
+  return `<div class="card">
+    <div class="card-head"><span class="card-title">Active Sessions</span></div>
+    <div class="big-num" style="margin-bottom:.75rem">${total}</div>
+    ${Object.entries(byProv).map(([p,n])=>row(p, String(n))).join('') || row('No sessions','—')}
+  </div>`;
+}
+
+function cardBackend(self) {
+  const used  = self?.memoryMb?.heapUsed ?? 0;
+  const total = self?.memoryMb?.heapTotal ?? 1;
+  const pct   = Math.min(100, Math.round((used/total)*100));
+  const pc    = pct > 80 ? 'r' : pct > 60 ? 'y' : 'g';
+  return `<div class="card">
+    <div class="card-head"><span class="card-title">Backend</span>${bdg(true,'RUNNING')}</div>
+    ${row('Uptime', self?.uptimeHuman || '—')}
+    ${row('Started', self?.startTime ? new Date(self.startTime).toLocaleString() : '—')}
+    ${row('Node.js', self?.nodeVersion || '—')}
+    ${row('Platform', self?.platform || '—')}
+    ${row('RSS memory', (self?.memoryMb?.rss||'—')+' MB')}
+    <div style="margin-top:.5rem">
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;margin-bottom:.25rem">
+        <span style="color:var(--muted)">Heap</span>
+        <span>${used} / ${total} MB (${pct}%)</span>
+      </div>
+      <div class="pbar"><div class="pfill ${pc}" style="width:${pct}%"></div></div>
+    </div>
+  </div>`;
+}
+
+function cardNamecheap(nc_data) {
+  if (!nc_data?.configured) return `<div class="card">
+    <div class="card-head"><span class="card-title">Domain (Namecheap)</span><span class="badge grey">Not configured</span></div>
+    ${nc(['Enable Namecheap metrics:','<code>NAMECHEAP_API_KEY</code>','<code>NAMECHEAP_API_USER</code>','<code>NAMECHEAP_CLIENT_IP</code>','Get API key at Namecheap → Profile → Tools → API Access.'])}
+  </div>`;
+
+  const days = nc_data.daysLeft;
+  const dc   = days > 90 ? 'green' : days > 30 ? 'yellow' : 'red';
+  return `<div class="card">
+    <div class="card-head"><span class="card-title">Domain (Namecheap)</span>${bdg(nc_data.status==='Active'||nc_data.status==='Ok'||!nc_data.status, nc_data.status||'Active')}</div>
+    ${row('Domain', '<code>10-minute-mail.online</code>')}
+    ${row('Status', nc_data.status || '—')}
+    ${row('Expires', nc_data.expiryDate ? fmtDate(nc_data.expiryDate) : '—')}
+    ${row('Days remaining', days != null ? `<span style="color:var(--${dc})">${days} days</span>` : '—')}
+    ${row('Auto-renew', nc_data.autoRenew ? '✓ On' : '✗ Off')}
+    ${row('Registrar lock', nc_data.locked ? '✓ Locked' : '✗ Unlocked')}
+    ${row('WHOIS Guard', nc_data.whoisGuard || '—')}
+    ${nc_data.error ? `<div style="color:var(--red);font-size:.72rem;margin-top:.5rem">⚠ ${nc_data.error}</div>` : ''}
+  </div>`;
+}
+
+function cardCosts(costs) {
+  const rm  = costs?.render?.monthly;
+  const nca = costs?.namecheap?.annual;
+  const total = (rm||0) + (nca ? nca/12 : 0);
+  return `<div class="card wide">
+    <div class="card-head"><span class="card-title">Cost Summary</span></div>
+    <div class="costs-grid">
+      <div class="cost-item">
+        <div class="ci-label">Render (Hosting)</div>
+        ${rm != null
+          ? `<div class="ci-value">$${rm.toFixed(2)}<span style="font-size:.75rem;color:var(--muted)">/mo</span></div>`
+          : nc(['Set <code>RENDER_PLAN_MONTHLY</code> (e.g. 7 for Starter plan)'])}
+      </div>
+      <div class="cost-item">
+        <div class="ci-label">Domain (Namecheap)</div>
+        ${nca != null
+          ? `<div class="ci-value">$${nca.toFixed(2)}<span style="font-size:.75rem;color:var(--muted)">/yr</span></div><div class="ci-sub">≈ $${(nca/12).toFixed(2)}/mo</div>`
+          : nc(['Set <code>NAMECHEAP_DOMAIN_ANNUAL</code> (e.g. 5.98)'])}
+      </div>
+      <div class="cost-item">
+        <div class="ci-label">Mail Providers</div>
+        <div class="ci-value" style="color:var(--green)">$0<span style="font-size:.75rem;color:var(--muted)">/mo</span></div>
+        <div class="ci-sub">mail.tm &amp; 1secmail are free</div>
+      </div>
+      ${total > 0 ? `<div class="cost-item">
+        <div class="ci-label">Total Estimated</div>
+        <div class="ci-value" style="color:var(--primary)">$${total.toFixed(2)}<span style="font-size:.75rem;color:var(--muted)">/mo</span></div>
+        <div class="ci-sub">≈ $${(total*12).toFixed(2)}/yr</div>
+      </div>` : ''}
+    </div>
+    <div style="font-size:.7rem;color:var(--muted2)">Cost figures are estimates based on configured plan values. Actual billing may differ.</div>
+  </div>`;
+}
+
+// Start
+boot();
+</script>
+</body>
+</html>

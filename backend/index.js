@@ -3,6 +3,31 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { existsSync } from 'fs';
+import { createHash } from 'crypto';
+import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
+import { getAllMetrics, getSelfHealth, ALLOWED_EMAIL } from './dashboard.js';
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
+const JWT_SECRET = process.env.JWT_SECRET
+  || createHash('sha256').update('10minmail-dash-' + (process.env.NODE_ENV || 'dev')).digest('hex');
+
+// Simple 30-second metrics cache to avoid hammering external APIs
+let _metricsCache = null;
+let _metricsCacheTs = 0;
+
+function requireDashAuth(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'Not authenticated' });
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (payload.email !== ALLOWED_EMAIL) return res.status(403).json({ error: 'Access denied' });
+    next();
+  } catch {
+    res.status(401).json({ error: 'Session expired — please sign in again' });
+  }
+}
 
 const app = express();
 app.use(express.json());
@@ -415,11 +440,62 @@ Disallow: /api/
 Sitemap: https://10-minute-mail.online/sitemap.xml`);
 });
 
+// ── Dashboard: config (public) ────────────────────────────────────────────────
+app.get('/api/dashboard/config', (_req, res) => {
+  res.json({ googleClientId: GOOGLE_CLIENT_ID });
+});
+
+// ── Dashboard: verify Google credential → issue JWT ───────────────────────────
+app.post('/api/auth/verify-google', async (req, res) => {
+  const { credential } = req.body || {};
+  if (!credential) return res.status(400).json({ error: 'Missing credential' });
+  if (!googleClient) return res.status(503).json({ error: 'Google Sign-In not configured on server (GOOGLE_CLIENT_ID missing)' });
+
+  try {
+    const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: GOOGLE_CLIENT_ID });
+    const payload = ticket.getPayload();
+    const email = payload?.email;
+
+    if (!email || email !== ALLOWED_EMAIL) {
+      return res.status(403).json({ error: `Access denied: ${email || 'unknown email'}` });
+    }
+
+    const token = jwt.sign(
+      { email, name: payload.name, picture: payload.picture },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    return res.json({ token });
+  } catch (e) {
+    console.error('[auth/verify-google]', e.message);
+    return res.status(401).json({ error: 'Token verification failed' });
+  }
+});
+
+// ── Dashboard: metrics (protected) ───────────────────────────────────────────
+app.get('/api/dashboard/metrics', requireDashAuth, async (req, res) => {
+  const now = Date.now();
+  if (_metricsCache && now - _metricsCacheTs < 30_000) {
+    return res.json({ ..._metricsCache, cached: true });
+  }
+  try {
+    const data = await getAllMetrics(sessions);
+    _metricsCache = data;
+    _metricsCacheTs = now;
+    return res.json(data);
+  } catch (e) {
+    console.error('[dashboard/metrics]', e.message);
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// ── Dashboard: serve HTML ─────────────────────────────────────────────────────
 // ── Static / SPA fallback ─────────────────────────────────────────────────────
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, '../frontend/dist');
 if (existsSync(DIST)) {
   app.use(express.static(DIST));
+  app.get('/dashboard', (_req, res) => res.sendFile(join(DIST, 'dashboard.html')));
   app.get('*', (req, res) => res.sendFile(join(DIST, 'index.html')));
 }
 
